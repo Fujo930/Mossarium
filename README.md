@@ -1,11 +1,11 @@
 # Mossarium
 
-Mossarium is a constitutional system for AI-maintained software projects. It provides tools to initialize project conventions and check compliance with established guidelines.
+Mossarium is a tool that installs an AI Constitution for GitHub repositories. It gives software projects a constitution that future AI agents must read before changing code.
 
 ## Features
 
-- `mossarium init` - Initialize project with constitutional files
-- `mossarium check` - Check project compliance with constitutional guidelines
+- `mossarium init` - Initialize project with complete constitutional structure
+- `mossarium check` - Check project compliance with constitutional requirements
 
 ## Installation
 
@@ -23,10 +23,17 @@ mossarium init
 mossarium check
 ```
 
-## Constitution
+## What Mossarium Provides
 
-The constitution is defined in `.mossarium/CONSTITUTION.md` and contains the guidelines for maintaining the project.
+Mossarium establishes an AI-readable constitution, history, memory, proposal process, and inheritance checks for software projects. 
 
-## Manifesto
+## Important Notes
 
-See `.mossarium/MANIFESTO.md` for the guiding principles of this system.
+This is NOT:
+- A chatbot
+- A programming language
+- An AI coding agent
+
+## Core Principle
+
+Mossarium gives software projects a constitution that future AI agents must read before changing code.

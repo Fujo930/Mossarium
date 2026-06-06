@@ -4,6 +4,22 @@
 
 This constitution establishes the guidelines and conventions for software projects maintained by AI systems. It serves as a reference for maintaining consistency, quality, and clarity in codebases.
 
+## AI Constitutional Rules
+
+1. **AI-Agent Readiness**: All code must be structured to allow AI agents to read and understand the project's purpose, history, and current state before making any changes.
+
+2. **Constitutional Compliance**: Any AI agent modifying code must first read and understand the constitution in its entirety.
+
+3. **Change Proposals**: All modifications must be proposed through a process that allows for review by other agents or humans.
+
+4. **History Preservation**: The project's history must be maintained in a way that AI agents can understand past decisions and reasoning.
+
+5. **Memory System**: The project must have an accessible memory system that AI agents can reference when making decisions.
+
+6. **Inheritance Checks**: Any new code or changes must be checked against existing constitutional principles.
+
+7. **Code Readability**: Code must be written in a way that is understandable to both humans and AI systems.
+
 ## Core Principles
 
 1. **Documentation First** - All code changes must be documented
