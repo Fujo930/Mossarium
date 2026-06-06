@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mossarium"
+version = "0.1.0"
+description = "A constitutional system for AI-maintained software projects"
+readme = "README.md"
+authors = [{name = "AI Maintenance Team"}]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.7"
+dependencies = [
+    "argparse",
+]
+
+[project.scripts]
+mossarium = "mossarium.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "black",
+    "flake8",
+]
