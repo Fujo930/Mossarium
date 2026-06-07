@@ -339,12 +339,10 @@ def test_mossarium_preflight_fails_if_root_mossarium_py_exists():
             # Create forbidden mossarium.py
             Path("mossarium.py").touch()
 
-            # Run mossarium preflight - should fail
-            # Use direct file path to avoid mossarium.py shadowing the package
-            import mossarium.cli
-            cli_path = str(Path(mossarium.cli.__file__).resolve())
+            # Use python -c with sys.path fix to avoid mossarium.py shadowing
             result = subprocess.run([
-                sys.executable, cli_path, "preflight"
+                sys.executable, "-c",
+                "import sys; sys.path = [p for p in sys.path if p]; from mossarium.cli import main; sys.argv=['mossarium','preflight']; main()"
             ], capture_output=True, text=True)
             assert result.returncode != 0, "preflight should fail when mossarium.py exists"
             assert "mossarium.py" in result.stdout, "preflight should mention mossarium.py"
@@ -551,11 +549,10 @@ def test_mossarium_audit_fails_if_root_mossarium_py_exists():
             # Create forbidden mossarium.py
             Path("mossarium.py").touch()
 
-            # Use direct file path to avoid mossarium.py shadowing the package
-            import mossarium.cli
-            cli_path = str(Path(mossarium.cli.__file__).resolve())
+            # Use python -c with sys.path fix to avoid mossarium.py shadowing
             result = subprocess.run([
-                sys.executable, cli_path, "audit"
+                sys.executable, "-c",
+                "import sys; sys.path = [p for p in sys.path if p]; from mossarium.cli import main; sys.argv=['mossarium','audit']; main()"
             ], capture_output=True, text=True)
             assert result.returncode != 0, "audit should fail when mossarium.py exists"
             assert "mossarium.py" in result.stdout, "audit should mention mossarium.py"

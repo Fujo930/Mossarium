@@ -195,6 +195,17 @@ what to read, what to obey, and what to avoid — without human prompting.
 - ✅ Managed sections preserve user content while allowing auto-generated updates
 - ✅ `pytest` includes v0.5 tests; currently 32 passed
 
+### v0.5.1 — Internal Refactor for AI Maintainability
+
+**Status: COMPLETE after this implementation**
+
+#### Working Features
+- ✅ `mossarium/cli.py` reduced from 1577 to 52 lines (argparse + dispatch only)
+- ✅ Logic split into focused modules: init, check, brief, preflight, audit, refresh, content, paths, utils
+- ✅ All 32 tests pass with zero behavior changes
+
+Future agents should prefer editing focused modules instead of expanding `mossarium/cli.py`.
+
 ---
 
 ## Key Commands Reference

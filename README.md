@@ -115,6 +115,25 @@ Mossarium can safely update context without touching user-authored notes.
 
 Mossarium gives every repository a self-describing layer that AI agents can read before acting: constitution, history, memory, proposals, agent roles, benchmarks, context map, activation files, and inheritance audit.
 
+## Development
+
+Mossarium modules are split for AI maintainability:
+
+| Module | Responsibility |
+|---|---|
+| `mossarium/cli.py` | CLI dispatch only (~52 lines) |
+| `mossarium/init.py` | Project initialization |
+| `mossarium/check.py` | Compliance checking |
+| `mossarium/brief.py` | AI project brief |
+| `mossarium/preflight.py` | Activation safety check |
+| `mossarium/audit.py` | Inheritance audit |
+| `mossarium/refresh.py` | Context refresh engine |
+| `mossarium/content.py` | Starter content and generators |
+| `mossarium/paths.py` | Centralised path definitions |
+| `mossarium/utils.py` | Shared helpers |
+
+When modifying Mossarium, prefer focused modules and avoid growing `mossarium/cli.py` unless changing CLI dispatch.
+
 ## What Mossarium Is NOT
 
 - Not a chatbot

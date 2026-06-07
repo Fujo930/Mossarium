@@ -1,5 +1,26 @@
 # Mossarium History
 
+## v0.5.1 — Internal Refactor for AI Maintainability
+
+v0.5.1 splits the large CLI implementation into focused modules without changing any public behavior.
+
+### New Module Structure
+
+| Module | Purpose |
+|---|---|
+| `mossarium/cli.py` | CLI dispatch only (1577 → 52 lines) |
+| `mossarium/init.py` | Project initialization |
+| `mossarium/check.py` | Compliance checking |
+| `mossarium/brief.py` | AI project brief |
+| `mossarium/preflight.py` | Activation safety check |
+| `mossarium/audit.py` | Inheritance audit |
+| `mossarium/refresh.py` | Context refresh engine |
+| `mossarium/content.py` | Starter content and generators |
+| `mossarium/paths.py` | Centralised path definitions |
+| `mossarium/utils.py` | Shared helpers |
+
+All 32 tests pass with zero behavior changes. Future agents should prefer editing focused modules instead of expanding `mossarium/cli.py`.
+
 ## v0.5.0 — Context Refresh Engine
 
 **AI memory must stay in sync with the repository it describes.**

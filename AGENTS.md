@@ -30,6 +30,7 @@ Before modifying code, read these Mossarium files:
 - Do not create `mossarium.py` in the root directory
 - Do not add `generate` or `export` commands
 - Do not manually modify `.mossarium/` as a substitute for changing init/check
+- When modifying Mossarium, prefer focused modules and avoid growing `mossarium/cli.py` unless changing CLI dispatch
 - Stop after completing the requested task
 - Wait for supervisor confirmation
 

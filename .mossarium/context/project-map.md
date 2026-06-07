@@ -32,8 +32,6 @@ project/
 <!-- MOSSARIUM:BEGIN AUTO-GENERATED -->
 ## Project Map
 
-### Project Identity
-
 Mossarium is an AI constitution system for GitHub repositories.
 
 ### Known Commands
@@ -47,27 +45,21 @@ Mossarium is an AI constitution system for GitHub repositories.
 
 ### Important Directories
 
-- `.mossarium/` — Constitutional framework root
-- `.mossarium/context/` — AI Context Map
-- `.mossarium/rules/` — Core rules
-- `.mossarium/agents/` — Agent definitions
-- `.mossarium/memory/` — Decisions, failures, architecture
-- `mossarium/` — CLI implementation
+- `mossarium/` — CLI implementation modules
 - `tests/` — Test suite
+- `.mossarium/` — Constitutional framework
+- `.mossarium/context/` — AI Context Map
 
 ### Main Implementation Files
 
-- `mossarium/cli.py` — All CLI commands
-- `tests/test_cli.py` — Behavior tests
+- `mossarium/cli.py` — CLI entry point and command dispatch
+- `tests/test_cli.py` — Behaviour tests
 
 ### AI Inheritance Workflow
 
-1. Run `mossarium brief` before editing
-2. Run `mossarium preflight` to verify readiness
-3. Read required files
-4. Identify task type
-5. Use Patch Mode for small changes
-6. Run `pytest` after code changes
-7. Run `mossarium audit` to verify inheritance quality
-8. Stop and wait for supervisor confirmation
+1. Run `mossarium brief` to understand the project
+2. Run `mossarium preflight` to check readiness
+3. Read `.mossarium/context/` files for context
+4. Identify task type and choose Patch Mode for small changes
+5. After changes, run `pytest`, `mossarium check`, `mossarium audit`
 <!-- MOSSARIUM:END AUTO-GENERATED -->

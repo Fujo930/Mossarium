@@ -34,45 +34,47 @@ AI agents should read this index first to understand the project layout before e
 <!-- MOSSARIUM:BEGIN AUTO-GENERATED -->
 ## File Index
 
-- `.gitignore` — Git ignore rules (supplementary)
-- `.mossarium/CONSTITUTION.md` — Repository AI constitution (core)
-- `.mossarium/HISTORY.md` — Repository-level project history (core)
-- `.mossarium/MANIFESTO.md` — Project philosophy (core)
-- `.mossarium/agents/builder-agent.md` — Builder agent definition (core)
-- `.mossarium/agents/guardian-agent.md` — Guardian agent definition (core)
-- `.mossarium/agents/historian-agent.md` — Historian agent definition (core)
-- `.mossarium/agents/reviewer-agent.md` — Reviewer agent definition (core)
-- `.mossarium/benchmarks/comprehension-test.md` — Markdown documentation (supplementary)
-- `.mossarium/benchmarks/inheritance-test.md` — Markdown documentation (supplementary)
-- `.mossarium/context/agent-protocol.md` — Agent interaction protocol (core)
-- `.mossarium/context/edit-zones.md` — Editable zone definitions (core)
-- `.mossarium/context/file-index.md` — AI-readable file index (core)
-- `.mossarium/context/invariants.md` — System invariants (core)
-- `.mossarium/context/patch-mode.md` — Patch mode rules (core)
-- `.mossarium/context/project-map.md` — AI project map (core)
-- `.mossarium/memory/architecture/.gitkeep` — Git directory placeholder (supplementary)
-- `.mossarium/memory/decisions/.gitkeep` — Git directory placeholder (supplementary)
-- `.mossarium/memory/failures/.gitkeep` — Git directory placeholder (supplementary)
-- `.mossarium/proposals/template.md` — Markdown documentation (supplementary)
-- `.mossarium/rules/ai-contribution-rules.md` — AI contribution guidelines (core)
-- `.mossarium/rules/core-rules.md` — Core development rules (core)
-- `AGENTS.md` — General AI agent activation guide (core)
-- `CONSTITUTION.md` — Markdown documentation (supplementary)
-- `HISTORY.md` — Project history and version record (core)
-- `MANIFESTO.md` — Markdown documentation (supplementary)
-- `QWEN.md` — Local AI memory and startup protocol (core)
-- `README.md` — Project overview and usage documentation (core)
-- `examples/tiny-python-project/README.md` — Markdown documentation (supplementary)
-- `mossarium/__init__.py` — Python source file (supplementary)
-- `mossarium/cli.py` — Main CLI implementation (core)
-- `mossarium/templates/__init__.py` — Python source file (supplementary)
-- `mossarium/templates/benchmarks.md` — Markdown documentation (supplementary)
-- `mossarium/templates/constitution.md` — Markdown documentation (supplementary)
-- `mossarium/templates/history.md` — Markdown documentation (supplementary)
-- `mossarium/templates/manifesto.md` — Markdown documentation (supplementary)
-- `mossarium/templates/memory.md` — Markdown documentation (supplementary)
-- `mossarium/templates/proposals.md` — Markdown documentation (supplementary)
-- `mossarium/templates/rules.md` — Markdown documentation (supplementary)
-- `pyproject.toml` — Python package configuration and CLI entrypoint (core)
-- `tests/test_cli.py` — CLI behavior tests (core)
+| Path | Purpose | Core |
+|---|---|---|
+| .gitignore | Git ignore rules |  |
+| .mossarium/CONSTITUTION.md | Repository AI constitution | yes |
+| .mossarium/HISTORY.md | Repository-level project history | yes |
+| .mossarium/MANIFESTO.md | Project philosophy | yes |
+| .mossarium/agents/builder-agent.md | Builder agent definition | yes |
+| .mossarium/agents/guardian-agent.md | Guardian agent definition | yes |
+| .mossarium/agents/historian-agent.md | Historian agent definition | yes |
+| .mossarium/agents/reviewer-agent.md | Reviewer agent definition | yes |
+| .mossarium/benchmarks/comprehension-test.md | Comprehension benchmark |  |
+| .mossarium/benchmarks/inheritance-test.md | Inheritance benchmark |  |
+| .mossarium/context/agent-protocol.md | Agent interaction protocol | yes |
+| .mossarium/context/edit-zones.md | Editable zone definitions | yes |
+| .mossarium/context/file-index.md | AI-readable file index | yes |
+| .mossarium/context/invariants.md | System invariants | yes |
+| .mossarium/context/patch-mode.md | Patch mode rules | yes |
+| .mossarium/context/project-map.md | AI project map | yes |
+| .mossarium/memory/architecture/.gitkeep | Project file |  |
+| .mossarium/memory/decisions/.gitkeep | Project file |  |
+| .mossarium/memory/failures/.gitkeep | Project file |  |
+| .mossarium/proposals/template.md | Change proposal template |  |
+| .mossarium/rules/ai-contribution-rules.md | AI contribution guidelines | yes |
+| .mossarium/rules/core-rules.md | Core development rules | yes |
+| AGENTS.md | General AI agent activation guide | yes |
+| CONSTITUTION.md | Documentation |  |
+| HISTORY.md | Project history and version record | yes |
+| MANIFESTO.md | Documentation |  |
+| QWEN.md | Local AI memory and startup protocol | yes |
+| README.md | Project overview and usage documentation | yes |
+| examples/tiny-python-project/README.md | Documentation |  |
+| mossarium/__init__.py | Python source file |  |
+| mossarium/cli.py | Main CLI implementation | yes |
+| mossarium/templates/__init__.py | Python source file |  |
+| mossarium/templates/benchmarks.md | Documentation |  |
+| mossarium/templates/constitution.md | Documentation |  |
+| mossarium/templates/history.md | Documentation |  |
+| mossarium/templates/manifesto.md | Documentation |  |
+| mossarium/templates/memory.md | Documentation |  |
+| mossarium/templates/proposals.md | Documentation |  |
+| mossarium/templates/rules.md | Documentation |  |
+| pyproject.toml | Python package configuration and CLI entrypoint | yes |
+| tests/test_cli.py | CLI behavior tests | yes |
 <!-- MOSSARIUM:END AUTO-GENERATED -->
