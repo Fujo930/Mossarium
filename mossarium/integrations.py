@@ -1,10 +1,11 @@
 """Codex integration installer for Mossarium."""
 
+import json
 from pathlib import Path
 
 from . import paths
 from . import content as c
-from .utils import ensure_dir
+from .utils import ensure_dir, read_text
 
 
 def _write_if_missing(filepath: str, content: str) -> str:
@@ -14,6 +15,62 @@ def _write_if_missing(filepath: str, content: str) -> str:
         return "SKIPPED"
     p.write_text(content, encoding="utf-8")
     return "CREATED"
+
+
+def validate_codex_plugin_package() -> tuple[bool, list[str]]:
+    """Validate the Codex plugin package scaffold.
+    Returns (ok, issues) where ok is True if all checks pass."""
+    issues = []
+
+    # plugin.json
+    pj = Path(paths.PLUGIN_JSON_FILE)
+    if not pj.exists():
+        issues.append(f"MISSING: {paths.PLUGIN_JSON_FILE}")
+    else:
+        try:
+            data = json.loads(pj.read_text(encoding="utf-8"))
+            for field in ["name", "version", "description", "skills"]:
+                if field not in data:
+                    issues.append(f"MISSING field in plugin.json: {field}")
+            if data.get("skills") != "./skills/":
+                issues.append(f"plugin.json skills should be './skills/', got: {data.get('skills')}")
+        except json.JSONDecodeError:
+            issues.append(f"INVALID JSON: {paths.PLUGIN_JSON_FILE}")
+
+    # Plugin SKILL.md
+    ps = Path(paths.PLUGIN_SKILL_FILE)
+    if not ps.exists():
+        issues.append(f"MISSING: {paths.PLUGIN_SKILL_FILE}")
+    else:
+        content = read_text(ps)
+        if "name: mossarium" not in content:
+            issues.append("SKILL.md missing frontmatter: name: mossarium")
+        if "description:" not in content:
+            issues.append("SKILL.md missing frontmatter: description:")
+
+    # Plugin scripts
+    for sp in [paths.PLUGIN_PREFLIGHT, paths.PLUGIN_FINISH]:
+        if not Path(sp).exists():
+            issues.append(f"MISSING: {sp}")
+
+    # Plugin README
+    if not Path(paths.PLUGIN_README).exists():
+        issues.append(f"MISSING: {paths.PLUGIN_README}")
+
+    # marketplace.json
+    mf = Path(paths.MARKETPLACE_FILE)
+    if not mf.exists():
+        issues.append(f"MISSING: {paths.MARKETPLACE_FILE}")
+    else:
+        try:
+            mdata = json.loads(mf.read_text(encoding="utf-8"))
+            path_val = mdata.get("plugins", [{}])[0].get("source", {}).get("path", "")
+            if path_val != "./plugins/mossarium-codex":
+                issues.append(f"marketplace.json should point to ./plugins/mossarium-codex, got: {path_val}")
+        except (json.JSONDecodeError, IndexError, KeyError):
+            issues.append(f"INVALID: {paths.MARKETPLACE_FILE}")
+
+    return (len(issues) == 0, issues)
 
 
 def install_codex_integration():
@@ -57,6 +114,18 @@ def install_codex_integration():
         print("\nCodex integration already present.")
     else:
         print(f"\nCodex integration installed.")
-        print(f"  local skill scaffold:  {paths.CODEX_SKILL_DIR}/")
-        print(f"  plugin package:        {paths.PLUGIN_DIR}/")
-        print(f"  marketplace scaffold:  {paths.MARKETPLACE_FILE}")
+
+    # Summary
+    print()
+    print(f"  Local skill scaffold:    {paths.CODEX_SKILL_DIR}/")
+    print(f"  Plugin package scaffold: {paths.PLUGIN_DIR}/")
+    print(f"  Repo marketplace scaffold:{paths.MARKETPLACE_FILE}")
+
+    # Publication readiness check (v0.6.2)
+    ok, issues = validate_codex_plugin_package()
+    if ok:
+        print(f"  Publication readiness:    OK")
+    else:
+        print(f"  Publication readiness:    WARN ({len(issues)} issue(s))")
+        for issue in issues:
+            print(f"    - {issue}")

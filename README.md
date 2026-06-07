@@ -127,7 +127,7 @@ Mossarium v0.6 adds **Codex Integration**, moving from manual CLI usage toward a
 | `plugins/mossarium-codex/` | Codex plugin package candidate (includes `.codex-plugin/plugin.json`, skill, scripts, README) |
 | `.agents/plugins/marketplace.json` | Repo-scoped local marketplace pointing to the plugin package |
 
-This is a local plugin scaffold and publication candidate, not yet an official public marketplace submission.
+This is a publication candidate, not yet an official public marketplace submission.
 
 ---
 

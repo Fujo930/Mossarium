@@ -1,13 +1,43 @@
 # Mossarium Codex Plugin
 
-This plugin packages the Mossarium Codex Skill.
+## What This Is
 
-It helps Codex-style coding agents:
+This plugin packages the Mossarium Codex Skill for Codex-style coding agents.
 
-- run `mossarium brief` before editing
-- run `mossarium preflight` before editing
-- run `mossarium refresh --check` before editing
-- use Patch Mode for small changes
-- run `pytest`, `mossarium refresh`, `mossarium audit`, and `mossarium check` after editing
+Mossarium is an AI constitution system for GitHub repositories.
 
-This package is a local plugin scaffold, not yet an official public marketplace submission.
+## What It Installs
+
+- **SKILL.md** — Mossarium protocol: what to run before, during, and after editing
+- **preflight.py** — Pre-edit checklist (brief, preflight, refresh --check)
+- **finish.py** — Post-edit checklist (pytest, refresh, audit, check)
+
+## How to Test Locally
+
+1. Install Mossarium: `pip install -e .`
+2. Run `mossarium integrate codex` to scaffold the integration
+3. Before editing: `mossarium brief` / `mossarium preflight` / `mossarium refresh --check`
+4. After editing: `pytest` / `mossarium refresh` / `mossarium audit` / `mossarium check`
+
+## Recommended Codex Workflow
+
+- Run `mossarium brief` before editing
+- Run `mossarium preflight` before editing
+- Run `mossarium refresh --check` before editing
+- Use Patch Mode for small changes
+- After editing, run `pytest`, `mossarium refresh`, `mossarium audit`, and `mossarium check`
+
+## Commands Used by the Skill
+
+| Command | When |
+|---|---|
+| `mossarium brief` | Before editing |
+| `mossarium preflight` | Before editing |
+| `mossarium refresh --check` | Before editing |
+| `mossarium refresh` | After editing |
+| `mossarium audit` | After editing |
+| `mossarium check` | After editing |
+
+## Publication Status
+
+This is a publication candidate scaffold, not an official public marketplace submission yet.

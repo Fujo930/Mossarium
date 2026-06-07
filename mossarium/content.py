@@ -926,41 +926,58 @@ It makes repositories easier for AI to inherit.
 """
 
 CODEX_PREFLIGHT_SCRIPT = '''#!/usr/bin/env python3
-"""Mossarium Codex preflight — run before editing."""
+"""Mossarium Codex preflight — run before editing.
+
+Runs mossarium brief, preflight, and refresh --check.
+Does not connect to any network or call any LLM API.
+Exits non-zero if any check fails.
+"""
 import subprocess
 import sys
 
-def run(cmd):
-    print(f"=== {cmd} ===")
-    result = subprocess.run(cmd, shell=True)
-    print()
-    return result.returncode
+def main():
+    def run(cmd):
+        print(f"=== {cmd} ===")
+        result = subprocess.run(cmd, shell=True)
+        print()
+        return result.returncode
 
-exit_code = 0
-exit_code |= run("mossarium brief")
-exit_code |= run("mossarium preflight")
-exit_code |= run("mossarium refresh --check")
-sys.exit(exit_code)
+    exit_code = 0
+    exit_code |= run("mossarium brief")
+    exit_code |= run("mossarium preflight")
+    exit_code |= run("mossarium refresh --check")
+    return exit_code
+
+sys.exit(main())
 '''
 
 CODEX_FINISH_SCRIPT = '''#!/usr/bin/env python3
-"""Mossarium Codex finish — run after editing."""
+"""Mossarium Codex finish — run after editing.
+
+Runs pytest, mossarium refresh, refresh --check, audit, and check.
+Does not connect to any network or call any LLM API.
+Does not commit, push, or modify files beyond mossarium refresh managed sections.
+Exits non-zero if any check fails.
+"""
 import subprocess
 import sys
 
-def run(cmd):
-    print(f"=== {cmd} ===")
-    result = subprocess.run(cmd, shell=True)
-    print()
-    return result.returncode
+def main():
+    def run(cmd):
+        print(f"=== {cmd} ===")
+        result = subprocess.run(cmd, shell=True)
+        print()
+        return result.returncode
 
-exit_code = 0
-exit_code |= run("pytest")
-exit_code |= run("mossarium refresh")
-exit_code |= run("mossarium refresh --check")
-exit_code |= run("mossarium audit")
-exit_code |= run("mossarium check")
-sys.exit(exit_code)
+    exit_code = 0
+    exit_code |= run("pytest")
+    exit_code |= run("mossarium refresh")
+    exit_code |= run("mossarium refresh --check")
+    exit_code |= run("mossarium audit")
+    exit_code |= run("mossarium check")
+    return exit_code
+
+sys.exit(main())
 '''
 
 
@@ -978,17 +995,47 @@ PLUGIN_JSON_CONTENT = """{
 
 PLUGIN_README_CONTENT = """# Mossarium Codex Plugin
 
-This plugin packages the Mossarium Codex Skill.
+## What This Is
 
-It helps Codex-style coding agents:
+This plugin packages the Mossarium Codex Skill for Codex-style coding agents.
 
-- run `mossarium brief` before editing
-- run `mossarium preflight` before editing
-- run `mossarium refresh --check` before editing
-- use Patch Mode for small changes
-- run `pytest`, `mossarium refresh`, `mossarium audit`, and `mossarium check` after editing
+Mossarium is an AI constitution system for GitHub repositories.
 
-This package is a local plugin scaffold, not yet an official public marketplace submission.
+## What It Installs
+
+- **SKILL.md** — Mossarium protocol: what to run before, during, and after editing
+- **preflight.py** — Pre-edit checklist (brief, preflight, refresh --check)
+- **finish.py** — Post-edit checklist (pytest, refresh, audit, check)
+
+## How to Test Locally
+
+1. Install Mossarium: `pip install -e .`
+2. Run `mossarium integrate codex` to scaffold the integration
+3. Before editing: `mossarium brief` / `mossarium preflight` / `mossarium refresh --check`
+4. After editing: `pytest` / `mossarium refresh` / `mossarium audit` / `mossarium check`
+
+## Recommended Codex Workflow
+
+- Run `mossarium brief` before editing
+- Run `mossarium preflight` before editing
+- Run `mossarium refresh --check` before editing
+- Use Patch Mode for small changes
+- After editing, run `pytest`, `mossarium refresh`, `mossarium audit`, and `mossarium check`
+
+## Commands Used by the Skill
+
+| Command | When |
+|---|---|
+| `mossarium brief` | Before editing |
+| `mossarium preflight` | Before editing |
+| `mossarium refresh --check` | Before editing |
+| `mossarium refresh` | After editing |
+| `mossarium audit` | After editing |
+| `mossarium check` | After editing |
+
+## Publication Status
+
+This is a publication candidate scaffold, not an official public marketplace submission yet.
 """
 
 MARKETPLACE_JSON_CONTENT = """{

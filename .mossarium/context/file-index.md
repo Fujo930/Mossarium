@@ -36,6 +36,7 @@ AI agents should read this index first to understand the project layout before e
 
 | Path | Purpose | Core |
 |---|---|---|
+| .agents/plugins/marketplace.json | Project file |  |
 | .codex/skills/mossarium/SKILL.md | Documentation |  |
 | .codex/skills/mossarium/scripts/finish.py | Python source file |  |
 | .codex/skills/mossarium/scripts/preflight.py | Python source file |  |
@@ -88,6 +89,11 @@ AI agents should read this index first to understand the project layout before e
 | mossarium/templates/proposals.md | Documentation |  |
 | mossarium/templates/rules.md | Documentation |  |
 | mossarium/utils.py | Python source file |  |
+| plugins/mossarium-codex/.codex-plugin/plugin.json | Project file |  |
+| plugins/mossarium-codex/README.md | Documentation |  |
+| plugins/mossarium-codex/skills/mossarium/SKILL.md | Documentation |  |
+| plugins/mossarium-codex/skills/mossarium/scripts/finish.py | Python source file |  |
+| plugins/mossarium-codex/skills/mossarium/scripts/preflight.py | Python source file |  |
 | pyproject.toml | Python package configuration and CLI entrypoint | yes |
 | tests/test_cli.py | CLI behavior tests | yes |
 <!-- MOSSARIUM:END AUTO-GENERATED -->

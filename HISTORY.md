@@ -1,5 +1,15 @@
 # Mossarium History
 
+## v0.6.2 — Codex Plugin Publication Candidate
+
+v0.6.2 validates and polishes the Codex plugin package scaffold toward publication readiness.
+
+- `validate_codex_plugin_package()` checks plugin.json, SKILL.md, scripts, README, marketplace.json
+- Plugin README expanded with sections: What This Is, How to Test Locally, Recommended Workflow, Commands, Publication Status
+- Scripts use `sys.exit(main())` pattern with safety comments
+- Both SKILL.md copies verified consistent
+- 5 new tests; 46 total
+
 ## v0.6.1 — Codex Packaging Readiness
 
 v0.6.1 adds Codex plugin packaging scaffolds to `mossarium integrate codex`, preparing Mossarium for future Codex plugin marketplace submission.

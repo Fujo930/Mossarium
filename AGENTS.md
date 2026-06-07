@@ -40,6 +40,7 @@ Before modifying code, read these Mossarium files:
 - Inspect `.codex/skills/mossarium/` — local skill scaffold
 - Inspect `plugins/mossarium-codex/` — plugin package candidate
 - Use repo-scoped marketplace at `.agents/plugins/marketplace.json` for local testing
+- v0.6.2 package is a publication candidate — verify against real Codex plugin installation before claiming official marketplace support
 - Before editing, follow the Mossarium Codex Skill:
   - Run `mossarium brief`
   - Run `mossarium preflight`
