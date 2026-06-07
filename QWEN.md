@@ -165,7 +165,13 @@ which rules to follow, and which mistakes to avoid.
 `mossarium brief` / `mossarium preflight` will automatically tell the agent
 what to read, what to obey, and what to avoid — without human prompting.
 
-**Note:** This is NOT yet implemented. Do not create these commands.
+**Status: COMPLETE after this implementation**
+
+### Working Features
+- ✅ `mossarium brief` outputs a short AI Project Brief before editing
+- ✅ `mossarium preflight` checks whether the repository is ready for AI work
+- ✅ `mossarium init` generates AGENTS.md and QWEN.md activation files
+- ✅ `pytest` includes v0.3 tests; currently 15 passed
 
 ---
 
@@ -178,6 +184,12 @@ mossarium init
 # Check compliance with constitutional guidelines
 mossarium check
 
+# Output a short AI project brief before editing
+mossarium brief
+
+# Check if the repository is ready for AI-assisted modification
+mossarium preflight
+
 # Run tests
 pytest
 ```
@@ -188,8 +200,7 @@ pytest
 
 This file was created to ensure future conversations have full context about:
 - What Mossarium is (and what it's not)
-- Current state: v0.1 (AI Constitution) COMPLETE, v0.2 (AI Context Map) COMPLETE
-- Next planned: v0.3 (Agent Activation Layer)
+- Current state: v0.1 (AI Constitution) COMPLETE, v0.2 (AI Context Map) COMPLETE, v0.3 (Agent Activation Layer) COMPLETE
 - The correct CLI entry point (`mossarium/cli.py`)
 - Strictly forbidden actions
 - Development workflow rules

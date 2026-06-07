@@ -616,6 +616,208 @@ Defines the strict protocol for applying fixes and small changes to the codebase
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(content)
 
+    # Create Agent Activation files in project root (v0.3)
+    agents_md_content = """# AGENTS.md - AI Agent Activation File
+
+This repository uses Mossarium, an AI constitution system for GitHub repositories.
+
+## Before Editing
+
+Run `mossarium brief` before editing any file.
+
+## Required Reading
+
+Before modifying code, read these Mossarium files:
+
+- `.mossarium/CONSTITUTION.md`
+- `.mossarium/context/project-map.md`
+- `.mossarium/context/file-index.md`
+- `.mossarium/context/invariants.md`
+- `.mossarium/context/patch-mode.md`
+
+## Rules
+
+- Use Patch Mode for bug fixes or small changes
+- Do not create `mossarium.py` in the root directory
+- Do not add `generate` or `export` commands
+- Do not manually modify `.mossarium/` as a substitute for changing init/check
+- Stop after completing the requested task
+- Wait for supervisor confirmation
+
+## Quick Start
+
+```bash
+mossarium brief      # Read the AI project brief
+mossarium preflight  # Check repository readiness
+mossarium check      # Verify compliance
+```
+"""
+
+    qwen_md_content = """# QWEN.md - Project Memory for Mossarium
+
+This file contains critical project context that Qwen Code must read before starting any work.
+
+## Project Identity
+
+**Mossarium is an AI constitution system for GitHub repositories.**
+
+### Core Slogan
+> Mossarium does not make AI smarter. It makes repositories easier for AI to inherit.
+
+### What Mossarium Is
+- A constitutional framework for AI-maintained software projects
+- A directory structure (`.mossarium/`) that stores rules, memory, and guidelines
+- A CLI tool (`mossarium init`, `mossarium check`, `mossarium brief`, `mossarium preflight`)
+- A system for AI agents to understand and maintain codebases
+
+### What Mossarium Is NOT
+- ❌ Not a chatbot
+- ❌ Not a programming language
+- ❌ Not a generic coding agent
+- ❌ Not a website
+- ❌ Not a database
+- ❌ Not an LLM API wrapper
+
+---
+
+## Current Stable State
+
+### v0.1 — AI Constitution
+
+**Status: COMPLETE**
+
+#### Working Features
+- ✅ `mossarium init` works - initializes `.mossarium/` directory structure
+- ✅ `mossarium check` works - validates constitutional compliance
+- ✅ Complete `.mossarium/` inheritance structure exists
+
+### v0.2 — AI Context Map
+
+**Status: COMPLETE**
+
+#### Working Features
+- ✅ `mossarium init` automatically generates the AI Context Map under `.mossarium/context/`
+- ✅ `mossarium check` validates all 6 context files
+
+### v0.3 — Agent Activation Layer
+
+**Status: COMPLETE**
+
+#### Working Features
+- ✅ `mossarium brief` outputs a short AI Project Brief before editing
+- ✅ `mossarium preflight` checks whether the repository is ready for AI work
+- ✅ `mossarium init` generates AGENTS.md and QWEN.md activation files
+
+---
+
+## Real CLI Entry
+
+### Entry Point
+The **ONLY** true CLI entry is:
+
+```toml
+# pyproject.toml
+[project.scripts]
+mossarium = \"mossarium.cli:main\"
+```
+
+### Actual File Location
+- **CLI file**: `mossarium/cli.py`
+- **NOT**: `mossarium.py` (root directory) - This must NEVER be created
+
+---
+
+## Forbidden Mistakes
+
+**STRICTLY PROHIBITED:**
+
+1. ❌ Do not create `mossarium.py` in root directory
+2. ❌ Do not add `generate` command to CLI
+3. ❌ Do not add `export` command to CLI
+4. ❌ Do not manually modify `.mossarium/` as a substitute for changing init/check
+5. ❌ Do not scan `.venv`
+6. ❌ Do not scan `.pytest_cache`
+7. ❌ Do not scan `**__pycache__`
+8. ❌ Do not scan `*.pyc`
+9. ❌ Do not use `tree /F` over the whole project
+10. ❌ Do not redefine Mossarium as a chatbot, programming language, generic coding agent, website, database, or LLM API wrapper
+
+---
+
+## Development Rule
+
+**ALL development must follow:**
+
+1. Work from current Git state
+2. Run `mossarium brief` before making changes
+3. Run `mossarium preflight` before editing
+4. Use `git ls-files` instead of full tree scans
+5. Modify only the files requested
+6. Make the smallest safe change
+7. Run `pytest` after code changes
+8. Stop after completing the requested task
+9. Wait for supervisor confirmation
+
+---
+
+## Patch Mode
+
+**For bug fixes or small changes:**
+
+- Read only relevant files
+- Change only the requested issue
+- Do not rewrite README
+- Do not rewrite CONSTITUTION
+- Do not add new features
+- Do not redesign architecture
+- Run the smallest relevant tests
+- Stop after verification
+
+---
+
+## Key Commands Reference
+
+```bash
+# Initialize project with constitutional structure
+mossarium init
+
+# Check compliance with constitutional guidelines
+mossarium check
+
+# Output a short AI project brief before editing
+mossarium brief
+
+# Check if the repository is ready for AI-assisted modification
+mossarium preflight
+
+# Run tests
+pytest
+```
+
+---
+
+## Memory Index
+
+This file was created to ensure future conversations have full context about:
+- What Mossarium is (and what it's not)
+- Current state: v0.1 (AI Constitution) COMPLETE, v0.2 (AI Context Map) COMPLETE, v0.3 (Agent Activation Layer) COMPLETE
+- The correct CLI entry point (`mossarium/cli.py`)
+- Strictly forbidden actions
+- Development workflow rules
+"""
+
+    # Create AGENTS.md if it doesn't exist
+    agents_md_path = Path("AGENTS.md")
+    if not agents_md_path.exists():
+        with open(agents_md_path, 'w', encoding='utf-8') as f:
+            f.write(agents_md_content)
+
+    # Create QWEN.md if it doesn't exist
+    qwen_md_path = Path("QWEN.md")
+    if not qwen_md_path.exists():
+        with open(qwen_md_path, 'w', encoding='utf-8') as f:
+            f.write(qwen_md_content)
+
     print("Project initialized with complete constitutional structure.")
 
 def check_compliance():
@@ -697,6 +899,117 @@ def check_compliance():
 
     print("Project compliance check passed")
 
+def brief_project():
+    """Output a short AI Project Brief for AI agents before editing."""
+    brief = """===============================================================================
+MOSSARIUM AI PROJECT BRIEF
+===============================================================================
+
+1. PROJECT IDENTITY
+
+Mossarium is an AI constitution system for GitHub repositories.
+
+2. CORE SLOGAN
+
+Mossarium does not make AI smarter.
+It makes repositories easier for AI to inherit.
+
+3. REQUIRED READING
+
+Before editing any file, read:
+
+  * QWEN.md
+  * README.md
+  * .mossarium/CONSTITUTION.md
+  * .mossarium/HISTORY.md
+  * .mossarium/context/project-map.md
+  * .mossarium/context/file-index.md
+  * .mossarium/context/invariants.md
+  * .mossarium/context/patch-mode.md
+
+4. FORBIDDEN ACTIONS
+
+  * Do not create mossarium.py
+  * Do not add generate command
+  * Do not add export command
+  * Do not manually modify .mossarium/ as a substitute for init/check changes
+  * Do not scan .venv, .pytest_cache, **pycache**, or *.pyc
+  * Do not redefine Mossarium as a chatbot, programming language,
+    generic coding agent, website, database, or LLM API wrapper
+
+5. RECOMMENDED WORKFLOW
+
+  * Run mossarium brief before editing
+  * Read required files
+  * Identify task type
+  * Use Patch Mode for bug fixes or small changes
+  * Modify only requested files
+  * Run pytest after code changes
+  * Stop and wait for supervisor confirmation
+
+6. PATCH MODE REMINDER
+
+  * Read only relevant files
+  * Make the smallest safe change
+  * Do not rewrite unrelated documentation
+  * Do not add unrequested features
+  * Do not redesign architecture
+
+==============================================================================="""
+    print(brief)
+
+def preflight():
+    """Check whether the repository is ready for AI-assisted modification."""
+    required_files = [
+        "QWEN.md",
+        "README.md",
+        ".mossarium/CONSTITUTION.md",
+        ".mossarium/HISTORY.md",
+        ".mossarium/context/project-map.md",
+        ".mossarium/context/file-index.md",
+        ".mossarium/context/invariants.md",
+        ".mossarium/context/patch-mode.md",
+    ]
+
+    forbidden_files = [
+        "mossarium.py",
+        "tests/README.md",
+    ]
+
+    warn_dirs = [
+        ".qwen/",
+        ".venv/",
+        ".pytest_cache/",
+        "**pycache**/",
+    ]
+
+    failed = False
+
+    # Check required files
+    for filepath in required_files:
+        p = Path(filepath)
+        if not p.exists():
+            print(f"FAIL: Required file missing: {filepath}")
+            failed = True
+
+    # Check forbidden files
+    for filepath in forbidden_files:
+        p = Path(filepath)
+        if p.exists():
+            print(f"FAIL: Forbidden file exists: {filepath}")
+            failed = True
+
+    # Check warning-only directories
+    for dirpath in warn_dirs:
+        p = Path(dirpath)
+        if p.exists() and p.is_dir():
+            print(f"WARN: Local directory found: {dirpath}")
+
+    if failed:
+        sys.exit(1)
+
+    print("Mossarium preflight passed")
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(description="Mossarium - Constitutional system for AI-maintained software projects")
@@ -708,6 +1021,12 @@ def main():
     # check command
     check_parser = subparsers.add_parser("check", help="Check project compliance with constitutional guidelines")
 
+    # brief command
+    brief_parser = subparsers.add_parser("brief", help="Output a short AI project brief before editing")
+
+    # preflight command
+    preflight_parser = subparsers.add_parser("preflight", help="Check if the repository is ready for AI-assisted modification")
+
     args = parser.parse_args()
 
     if not args.command:
@@ -718,6 +1037,10 @@ def main():
         init_project()
     elif args.command == "check":
         check_compliance()
+    elif args.command == "brief":
+        brief_project()
+    elif args.command == "preflight":
+        preflight()
 
 if __name__ == "__main__":
     main()

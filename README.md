@@ -7,8 +7,10 @@
 
 ## Features
 
-- `mossarium init` - Initialize project with complete constitutional structure + AI Context Map
+- `mossarium init` - Initialize project with complete constitutional structure + AI Context Map + Agent Activation files
 - `mossarium check` - Check project compliance with constitutional requirements
+- `mossarium brief` - Output a short AI project brief before editing
+- `mossarium preflight` - Check whether the repository is ready for AI-assisted modification
 
 ## Installation
 
@@ -27,11 +29,18 @@ pip install -e .
 #   - agent role files (builder, reviewer, historian, guardian)
 #   - benchmark files (inheritance, comprehension)
 #   - AI Context Map (6 files)
+#   - Agent Activation files (AGENTS.md, QWEN.md)
 mossarium init
 
 # Check project compliance
 # Verifies all constitutional files + AI Context Map exist
 mossarium check
+
+# Output a short AI project brief before editing
+mossarium brief
+
+# Check if the repository is ready for AI-assisted modification
+mossarium preflight
 ```
 
 ## AI Context Map (v0.2)
@@ -56,6 +65,22 @@ These files help AI agents understand **before modifying code**:
 - **Invariants** — rules that must never be broken
 - **Agent protocol** — how agents coordinate (read-first, propose-then-execute)
 - **Patch mode** — minimal, safe fix protocol
+
+## Agent Activation Layer (v0.3)
+
+Mossarium v0.3 adds an **Agent Activation Layer** so AI agents know what to read, what to obey, and what to avoid — without repeated human reminders.
+
+### New Commands
+
+- `mossarium brief` — Outputs a short AI Project Brief with project identity, required reading, forbidden actions, recommended workflow, and patch mode rules.
+- `mossarium preflight` — Checks whether the repository is ready for AI-assisted modification by verifying required files exist, forbidden files are absent, and warning about local directories.
+
+### Activation Files
+
+`mossarium init` now also generates:
+
+- `AGENTS.md` — Universal AI agent entry point telling any AI agent to run `mossarium brief` and follow Mossarium rules.
+- `QWEN.md` — Project memory file for Qwen Code / local AI tools, containing full project context and development rules.
 
 ## What Mossarium Provides
 

@@ -240,6 +240,169 @@ def test_mossarium_init_fills_missing_context_files():
         finally:
             os.chdir(original_cwd)
 
+def test_mossarium_brief_exits_successfully():
+    """Test that mossarium brief exits successfully."""
+    result = subprocess.run([
+        sys.executable, "-m", "mossarium.cli", "brief"
+    ], capture_output=True, text=True)
+    assert result.returncode == 0, f"mossarium brief failed: {result.stderr}"
+
+
+def test_mossarium_brief_contains_required_sections():
+    """Test that mossarium brief output contains required sections."""
+    result = subprocess.run([
+        sys.executable, "-m", "mossarium.cli", "brief"
+    ], capture_output=True, text=True)
+    assert result.returncode == 0
+    output = result.stdout
+    assert "Mossarium" in output, "Brief should mention Mossarium"
+    assert "REQUIRED READING" in output, "Brief should have REQUIRED READING section"
+    assert "PATCH MODE REMINDER" in output, "Brief should have PATCH MODE REMINDER section"
+    assert "QWEN.md" in output, "Brief should list QWEN.md"
+    assert ".mossarium/context/project-map.md" in output, "Brief should list project-map.md"
+    assert "Do not create mossarium.py" in output, "Brief should forbid mossarium.py"
+
+
+def test_mossarium_preflight_passes_after_init():
+    """Test that mossarium preflight passes after mossarium init."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            # Run mossarium init first
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0, f"mossarium init failed: {result.stderr}"
+
+            # Create README.md (required by preflight but not created by init)
+            Path("README.md").write_text("# Test Project\n")
+
+            # Run mossarium preflight
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "preflight"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0, f"mossarium preflight failed: {result.stderr}"
+            assert "Mossarium preflight passed" in result.stdout
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_preflight_fails_if_qwen_missing():
+    """Test that mossarium preflight fails if QWEN.md is missing."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            # Run mossarium init first
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            # Create README.md so only QWEN.md is missing
+            Path("README.md").write_text("# Test Project\n")
+
+            # Delete QWEN.md
+            Path("QWEN.md").unlink()
+
+            # Run mossarium preflight - should fail
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "preflight"
+            ], capture_output=True, text=True)
+            assert result.returncode != 0, "preflight should fail when QWEN.md is missing"
+            assert "QWEN.md" in result.stdout, "preflight should mention missing QWEN.md"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_preflight_fails_if_root_mossarium_py_exists():
+    """Test that mossarium preflight fails if root mossarium.py exists."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            # Run mossarium init first
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            # Create README.md (required by preflight)
+            Path("README.md").write_text("# Test Project\n")
+
+            # Create forbidden mossarium.py
+            Path("mossarium.py").touch()
+
+            # Run mossarium preflight - should fail
+            # Use direct file path to avoid mossarium.py shadowing the package
+            import mossarium.cli
+            cli_path = str(Path(mossarium.cli.__file__).resolve())
+            result = subprocess.run([
+                sys.executable, cli_path, "preflight"
+            ], capture_output=True, text=True)
+            assert result.returncode != 0, "preflight should fail when mossarium.py exists"
+            assert "mossarium.py" in result.stdout, "preflight should mention mossarium.py"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_init_creates_agents_and_qwen_md():
+    """Test that mossarium init creates AGENTS.md and QWEN.md if missing."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            assert Path("AGENTS.md").exists(), "AGENTS.md should be created by init"
+            assert Path("QWEN.md").exists(), "QWEN.md should be created by init"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_init_does_not_overwrite_existing_agents_or_qwen():
+    """Test that mossarium init does not overwrite existing AGENTS.md or QWEN.md."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            # Create AGENTS.md with custom content before init
+            custom_agents = "Custom AGENTS.md content"
+            Path("AGENTS.md").write_text(custom_agents)
+
+            # Create QWEN.md with custom content before init
+            custom_qwen = "Custom QWEN.md content"
+            Path("QWEN.md").write_text(custom_qwen)
+
+            # Run mossarium init
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            # Verify existing files were NOT overwritten
+            assert Path("AGENTS.md").read_text() == custom_agents, \
+                "Existing AGENTS.md should not be overwritten"
+            assert Path("QWEN.md").read_text() == custom_qwen, \
+                "Existing QWEN.md should not be overwritten"
+
+        finally:
+            os.chdir(original_cwd)
+
+
 if __name__ == "__main__":
     test_mossarium_init()
     test_mossarium_check()
