@@ -206,6 +206,16 @@ what to read, what to obey, and what to avoid — without human prompting.
 
 Future agents should prefer editing focused modules instead of expanding `mossarium/cli.py`.
 
+### v0.6 — Codex Integration Layer
+
+**Status: COMPLETE after this implementation**
+
+#### Working Features
+- ✅ `mossarium integrate codex` installs a local Codex skill scaffold
+- ✅ Generated SKILL.md, preflight.py, and finish.py under `.codex/skills/mossarium/`
+- ✅ Existing files are never overwritten
+- ✅ `pytest` includes v0.6 tests; currently 38 passed
+
 ---
 
 ## Key Commands Reference
@@ -232,6 +242,9 @@ mossarium refresh
 # Check whether the AI Context Map is stale (no writes)
 mossarium refresh --check
 
+# Install Codex local integration scaffold
+mossarium integrate codex
+
 # Run tests
 pytest
 ```
@@ -242,7 +255,7 @@ pytest
 
 This file was created to ensure future conversations have full context about:
 - What Mossarium is (and what it's not)
-- Current state: v0.1 (AI Constitution) COMPLETE, v0.2 (AI Context Map) COMPLETE, v0.3 (Agent Activation Layer) COMPLETE, v0.4 (Inheritance Audit) COMPLETE, v0.5 (Context Refresh Engine) COMPLETE
+- Current state: v0.1 (AI Constitution) COMPLETE, v0.2 (AI Context Map) COMPLETE, v0.3 (Agent Activation Layer) COMPLETE, v0.4 (Inheritance Audit) COMPLETE, v0.5 (Context Refresh Engine) COMPLETE, v0.6 (Codex Integration Layer) COMPLETE
 - The correct CLI entry point (`mossarium/cli.py`)
 - Strictly forbidden actions
 - Development workflow rules

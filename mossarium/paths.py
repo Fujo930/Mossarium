@@ -112,3 +112,10 @@ EXCLUDED_SCAN = [
 ]
 
 EXCLUDED_SCAN_DIRS = {".git", ".venv", ".pytest_cache", "__pycache__", ".qwen", "build", "dist"}
+
+# --- Codex integration paths ---
+CODEX_SKILL_DIR = ".codex/skills/mossarium"
+CODEX_SCRIPTS_DIR = ".codex/skills/mossarium/scripts"
+CODEX_SKILL_FILE = ".codex/skills/mossarium/SKILL.md"
+CODEX_PREFLIGHT_SCRIPT = ".codex/skills/mossarium/scripts/preflight.py"
+CODEX_FINISH_SCRIPT = ".codex/skills/mossarium/scripts/finish.py"

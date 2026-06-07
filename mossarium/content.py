@@ -872,3 +872,88 @@ CONTEXT_GENERATORS = {
     ".mossarium/context/agent-protocol.md": generate_agent_protocol,
     ".mossarium/context/patch-mode.md": generate_patch_mode,
 }
+
+
+# =============================================================================
+# v0.6 — Codex Integration Content
+# =============================================================================
+
+CODEX_SKILL_CONTENT = """# Mossarium Codex Skill
+
+## Project Identity
+
+Mossarium is an AI constitution system for GitHub repositories.
+
+## Core Slogan
+
+Mossarium does not make AI smarter.
+It makes repositories easier for AI to inherit.
+
+## Before Editing
+
+- Run `mossarium brief`
+- Run `mossarium preflight`
+- Run `mossarium refresh --check`
+- Read `QWEN.md`
+- Read `AGENTS.md`
+- Read `.mossarium/context/project-map.md`
+- Read `.mossarium/context/file-index.md`
+- Read `.mossarium/context/invariants.md`
+- Read `.mossarium/context/patch-mode.md`
+
+## During Editing
+
+- Use Patch Mode for bug fixes and small changes
+- Modify only requested files
+- Do not add unrequested features
+- Do not redesign architecture
+- Do not create `mossarium.py`
+- Do not add `generate` or `export` commands
+
+## After Editing
+
+- Run `pytest`
+- Run `mossarium refresh`
+- Run `mossarium refresh --check`
+- Run `mossarium audit`
+- Run `mossarium check`
+- Stop and wait for supervisor confirmation
+"""
+
+CODEX_PREFLIGHT_SCRIPT = '''#!/usr/bin/env python3
+"""Mossarium Codex preflight — run before editing."""
+import subprocess
+import sys
+
+def run(cmd):
+    print(f"=== {cmd} ===")
+    result = subprocess.run(cmd, shell=True)
+    print()
+    return result.returncode
+
+exit_code = 0
+exit_code |= run("mossarium brief")
+exit_code |= run("mossarium preflight")
+exit_code |= run("mossarium refresh --check")
+sys.exit(exit_code)
+'''
+
+CODEX_FINISH_SCRIPT = '''#!/usr/bin/env python3
+"""Mossarium Codex finish — run after editing."""
+import subprocess
+import sys
+
+def run(cmd):
+    print(f"=== {cmd} ===")
+    result = subprocess.run(cmd, shell=True)
+    print()
+    return result.returncode
+
+exit_code = 0
+exit_code |= run("pytest")
+exit_code |= run("mossarium refresh")
+exit_code |= run("mossarium refresh --check")
+exit_code |= run("mossarium audit")
+exit_code |= run("mossarium check")
+sys.exit(exit_code)
+'''

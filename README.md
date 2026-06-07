@@ -18,6 +18,7 @@
 | `mossarium audit` | Full inheritance-quality audit (files, content, semantics, safety) |
 | `mossarium refresh` | Refresh AI Context Map from current repository state |
 | `mossarium refresh --check` | Check whether the context map is stale |
+| `mossarium integrate codex` | Install Codex local integration scaffold |
 
 ---
 
@@ -108,6 +109,16 @@ Mossarium v0.5 adds **Context Refresh**, moving from static AI memory to maintai
 
 Managed sections use `<!-- MOSSARIUM:BEGIN AUTO-GENERATED -->` markers so
 Mossarium can safely update context without touching user-authored notes.
+
+### v0.6 — Codex Integration Layer
+
+Mossarium v0.6 adds **Codex Integration**, moving from manual CLI usage toward agent-integrated workflow. `mossarium integrate codex` installs a local Codex skill scaffold under `.codex/skills/mossarium/` so Codex-style coding agents can activate Mossarium before and after editing.
+
+| File | Purpose |
+|---|---|
+| `.codex/skills/mossarium/SKILL.md` | Mossarium protocol for Codex agents |
+| `.codex/skills/mossarium/scripts/preflight.py` | Pre-edit checklist (brief, preflight, refresh --check) |
+| `.codex/skills/mossarium/scripts/finish.py` | Post-edit checklist (pytest, refresh, audit, check) |
 
 ---
 

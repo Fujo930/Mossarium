@@ -870,6 +870,152 @@ def test_mossarium_refresh_excludes_noise_in_file_index():
             os.chdir(original_cwd)
 
 
+def test_mossarium_integrate_codex_exits_successfully():
+    """Test that mossarium integrate codex exits successfully."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "integrate", "codex"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0, f"integrate codex failed: {result.stderr}"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_integrate_codex_creates_files():
+    """Test that mossarium integrate codex creates all required files."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "integrate", "codex"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            assert Path(".codex/skills/mossarium/SKILL.md").exists(), \
+                "SKILL.md should be created"
+            assert Path(".codex/skills/mossarium/scripts/preflight.py").exists(), \
+                "preflight.py should be created"
+            assert Path(".codex/skills/mossarium/scripts/finish.py").exists(), \
+                "finish.py should be created"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_integrate_codex_skill_contains_required_content():
+    """Test that SKILL.md contains required Mossarium references."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "integrate", "codex"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            content = Path(".codex/skills/mossarium/SKILL.md").read_text(encoding="utf-8")
+            assert "Mossarium Codex Skill" in content
+            assert "mossarium brief" in content
+            assert "mossarium preflight" in content
+            assert "mossarium refresh --check" in content
+            assert "mossarium audit" in content
+            assert "Patch Mode" in content
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_integrate_codex_does_not_overwrite_skill():
+    """Test that integrate codex does not overwrite existing SKILL.md."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "integrate", "codex"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            # Modify SKILL.md with custom content
+            custom = "Custom Codex skill content"
+            Path(".codex/skills/mossarium/SKILL.md").write_text(custom, encoding="utf-8")
+
+            # Run integrate again — should not overwrite
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "integrate", "codex"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+            assert Path(".codex/skills/mossarium/SKILL.md").read_text(encoding="utf-8") == custom
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_integrate_codex_twice_does_not_crash():
+    """Test that running integrate codex twice does not crash."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "integrate", "codex"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "integrate", "codex"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0, \
+                f"second integrate codex should not crash: {result.stderr}"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_help_includes_integrate():
+    """Test that mossarium --help includes integrate."""
+    result = subprocess.run([
+        sys.executable, "-m", "mossarium.cli", "--help"
+    ], capture_output=True, text=True)
+    assert result.returncode == 0
+    assert "integrate" in result.stdout, "--help should include integrate command"
+
+
 if __name__ == "__main__":
     test_mossarium_init()
     test_mossarium_check()

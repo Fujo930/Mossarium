@@ -11,6 +11,7 @@ from . import brief
 from . import preflight
 from . import audit
 from . import refresh
+from . import integrations
 
 
 def main():
@@ -40,6 +41,11 @@ def main():
     refresh_parser.add_argument("--check", action="store_true",
                                 help="Only check whether context is stale, do not write")
 
+    # integrate
+    integrate_parser = subparsers.add_parser("integrate", help="Install integration scaffolds")
+    integrate_sub = integrate_parser.add_subparsers(dest="target", help="Integration target")
+    integrate_sub.add_parser("codex", help="Install Codex local integration scaffold")
+
     args = parser.parse_args()
 
     if not args.command:
@@ -61,6 +67,11 @@ def main():
             refresh.check_refresh()
         else:
             refresh.refresh_project()
+    elif args.command == "integrate":
+        if args.target == "codex":
+            integrations.install_codex_integration()
+        else:
+            integrate_parser.print_help()
 
 
 if __name__ == "__main__":

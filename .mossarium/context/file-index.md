@@ -66,7 +66,15 @@ AI agents should read this index first to understand the project layout before e
 | README.md | Project overview and usage documentation | yes |
 | examples/tiny-python-project/README.md | Documentation |  |
 | mossarium/__init__.py | Python source file |  |
+| mossarium/audit.py | Python source file |  |
+| mossarium/brief.py | Python source file |  |
+| mossarium/check.py | Python source file |  |
 | mossarium/cli.py | Main CLI implementation | yes |
+| mossarium/content.py | Python source file |  |
+| mossarium/init.py | Python source file |  |
+| mossarium/paths.py | Python source file |  |
+| mossarium/preflight.py | Python source file |  |
+| mossarium/refresh.py | Python source file |  |
 | mossarium/templates/__init__.py | Python source file |  |
 | mossarium/templates/benchmarks.md | Documentation |  |
 | mossarium/templates/constitution.md | Documentation |  |
@@ -75,6 +83,7 @@ AI agents should read this index first to understand the project layout before e
 | mossarium/templates/memory.md | Documentation |  |
 | mossarium/templates/proposals.md | Documentation |  |
 | mossarium/templates/rules.md | Documentation |  |
+| mossarium/utils.py | Python source file |  |
 | pyproject.toml | Python package configuration and CLI entrypoint | yes |
 | tests/test_cli.py | CLI behavior tests | yes |
 <!-- MOSSARIUM:END AUTO-GENERATED -->

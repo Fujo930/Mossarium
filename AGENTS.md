@@ -34,6 +34,19 @@ Before modifying code, read these Mossarium files:
 - Stop after completing the requested task
 - Wait for supervisor confirmation
 
+## If Using Codex
+
+- Run `mossarium integrate codex` once
+- Before editing, follow the Mossarium Codex Skill:
+  - Run `mossarium brief`
+  - Run `mossarium preflight`
+  - Run `mossarium refresh --check`
+- After editing:
+  - Run `pytest`
+  - Run `mossarium refresh`
+  - Run `mossarium audit`
+  - Run `mossarium check`
+
 ## Quick Start
 
 ```bash

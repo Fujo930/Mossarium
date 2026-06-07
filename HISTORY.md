@@ -1,5 +1,26 @@
 # Mossarium History
 
+## v0.6.0 — Codex Integration Layer
+
+Mossarium v0.6 introduces `mossarium integrate codex`.
+
+It creates a local Codex integration scaffold under `.codex/skills/mossarium/` so Codex-style coding agents can activate Mossarium before and after editing — without requiring developers to manually run CLI commands.
+
+### New Command
+- `mossarium integrate codex` — Installs a local Codex skill with SKILL.md, preflight.py, and finish.py
+
+### Generated Files
+- `.codex/skills/mossarium/SKILL.md` — Mossarium protocol for Codex agents
+- `.codex/skills/mossarium/scripts/preflight.py` — Runs brief, preflight, refresh --check before editing
+- `.codex/skills/mossarium/scripts/finish.py` — Runs pytest, refresh, audit, check after editing
+
+### Changes in v0.6
+- `mossarium integrate codex` command added
+- `mossarium/integrations.py` module created
+- Codex content added to `mossarium/content.py`
+- 6 new tests covering integration install, file creation, content checks, idempotence, and help output
+- All previous 32 tests still pass; total 38 tests
+
 ## v0.5.1 — Internal Refactor for AI Maintainability
 
 v0.5.1 splits the large CLI implementation into focused modules without changing any public behavior.
