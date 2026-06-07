@@ -44,3 +44,17 @@ Any invariant violation:
 - Triggers `MISSING` output from `mossarium check`
 - Returns non-zero exit code
 - Must be resolved before deployment
+
+<!-- MOSSARIUM:BEGIN AUTO-GENERATED -->
+## Core Invariants
+
+- Mossarium is an AI constitution system for GitHub repositories
+- Mossarium does not make AI smarter
+- It makes repositories easier for AI to inherit
+- Mossarium must not become a chatbot
+- Mossarium must not become a programming language
+- Mossarium must not become a generic coding agent
+- Mossarium must not become a website
+- Mossarium must not become a database
+- Mossarium must not become an LLM API wrapper
+<!-- MOSSARIUM:END AUTO-GENERATED -->

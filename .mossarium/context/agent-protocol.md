@@ -50,3 +50,22 @@ Defines the interaction protocol for AI agents operating within this constitutio
 4. **No Direct Context Edits**: Context files are read-only for agents
    - Regenerated only by `mossarium init`
    - Manual edits violate Invariants #4
+
+<!-- MOSSARIUM:BEGIN AUTO-GENERATED -->
+## Agent Protocol
+
+### Before Editing
+
+- run `mossarium brief`
+- run `mossarium preflight`
+- read required files
+- identify task type
+- choose Patch Mode for small changes
+
+### After Editing
+
+- run `pytest`
+- run `mossarium check`
+- run `mossarium audit`
+- stop and wait for supervisor confirmation
+<!-- MOSSARIUM:END AUTO-GENERATED -->

@@ -1,5 +1,29 @@
 # Mossarium History
 
+## v0.5.0 — Context Refresh Engine
+
+**AI memory must stay in sync with the repository it describes.**
+
+Mossarium v0.5 introduces `mossarium refresh` and `mossarium refresh --check`.
+
+It moves Mossarium from static AI memory to maintainable AI memory. `mossarium refresh` scans the current repository and updates managed sections inside the six AI Context Map files — using `<!-- MOSSARIUM:BEGIN AUTO-GENERATED -->` markers to replace generated content while preserving all user-written content outside those sections.
+
+### New Commands
+- `mossarium refresh` — Regenerates AI Context Map from current repository state
+- `mossarium refresh --check` — Reports STALE for any managed section that differs from expected output; exits non-zero without writing files
+
+### Design
+- Managed sections allow Mossarium to safely update context without touching user-authored notes
+- File scanning uses `git ls-files` with a safe directory-walk fallback
+- Excludes `.git/`, `.venv/`, `.pytest_cache/`, `__pycache__/`, `.qwen/`, `build/`, `dist/`, `*.egg-info/`, `*.pyc`
+
+### Changes in v0.5
+- `mossarium refresh` command added
+- `mossarium refresh --check` command added
+- Six context file generators implemented (file-index, project-map, edit-zones, invariants, agent-protocol, patch-mode)
+- 8 new tests covering refresh, managed sections, user content preservation, --check pass/fail, file-index content, and noise exclusion
+- All previous 24 tests still pass; total 32 tests
+
 ## v0.4.0 — Inheritance Audit
 
 **Structure and activation are not enough. A repository must prove it is ready for AI inheritance.**

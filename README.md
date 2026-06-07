@@ -16,6 +16,8 @@
 | `mossarium brief` | Print a short AI project brief before editing |
 | `mossarium preflight` | Check activation safety before modifying code |
 | `mossarium audit` | Full inheritance-quality audit (files, content, semantics, safety) |
+| `mossarium refresh` | Refresh AI Context Map from current repository state |
+| `mossarium refresh --check` | Check whether the context map is stale |
 
 ---
 
@@ -33,6 +35,7 @@ mossarium brief       # Read the AI project brief
 mossarium preflight   # Verify repo is ready for AI work
 mossarium check       # Check constitutional compliance
 mossarium audit       # Run full inheritance audit
+mossarium refresh     # Update AI Context Map
 ```
 
 ---
@@ -93,6 +96,18 @@ Result: PASS WITH WARNINGS
 | `mossarium check` | Structure — are constitutional files present? |
 | `mossarium preflight` | Activation safety — are activation files present? forbidden files absent? |
 | `mossarium audit` | Inheritance quality — required files, context content, semantic markers, forbidden patterns |
+
+### v0.5 — Context Refresh Engine
+
+Mossarium v0.5 adds **Context Refresh**, moving from static AI memory to maintainable AI memory. `mossarium refresh` scans the repository and updates managed sections inside the AI Context Map — while preserving any user-written content outside those sections.
+
+| Command | Purpose |
+|---|---|
+| `mossarium refresh` | Regenerate AI Context Map from current repository state |
+| `mossarium refresh --check` | Report whether the context map is stale (exit code only, no writes) |
+
+Managed sections use `<!-- MOSSARIUM:BEGIN AUTO-GENERATED -->` markers so
+Mossarium can safely update context without touching user-authored notes.
 
 ---
 

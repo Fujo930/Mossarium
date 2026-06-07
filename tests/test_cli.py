@@ -649,6 +649,230 @@ def test_mossarium_audit_does_not_fail_on_warnings_only():
             os.chdir(original_cwd)
 
 
+def test_mossarium_refresh_exits_successfully():
+    """Test that mossarium refresh exits successfully."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "refresh"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0, f"mossarium refresh failed: {result.stderr}"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_refresh_creates_managed_sections():
+    """Test that mossarium refresh creates managed sections with markers."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "refresh"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            for filename in ["project-map.md", "file-index.md", "edit-zones.md",
+                             "invariants.md", "agent-protocol.md", "patch-mode.md"]:
+                content = Path(f".mossarium/context/{filename}").read_text(encoding="utf-8")
+                assert "<!-- MOSSARIUM:BEGIN AUTO-GENERATED -->" in content, \
+                    f"{filename} should contain managed section begin marker"
+                assert "<!-- MOSSARIUM:END AUTO-GENERATED -->" in content, \
+                    f"{filename} should contain managed section end marker"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_refresh_preserves_user_content():
+    """Test that refresh preserves user content outside managed sections."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            # Add user content before the managed section
+            pm_path = Path(".mossarium/context/project-map.md")
+            original = pm_path.read_text(encoding="utf-8")
+            user_header = "# My Custom Project Notes\n\nThis is user content.\n\n"
+            pm_path.write_text(user_header + original, encoding="utf-8")
+
+            # Refresh
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "refresh"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            # Verify user content preserved
+            new_content = pm_path.read_text(encoding="utf-8")
+            assert "My Custom Project Notes" in new_content, \
+                "User content outside managed section should be preserved"
+            assert "This is user content" in new_content, \
+                "User content outside managed section should be preserved"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_refresh_check_passes_after_refresh():
+    """Test that refresh --check passes immediately after refresh."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "refresh"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "refresh", "--check"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0, \
+                f"refresh --check should pass after refresh: {result.stdout}"
+            assert "up to date" in result.stdout.lower()
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_refresh_check_fails_on_stale():
+    """Test that refresh --check fails if a managed section is manually changed."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "refresh"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            # Tamper with a managed section
+            pm_path = Path(".mossarium/context/project-map.md")
+            content = pm_path.read_text(encoding="utf-8")
+            pm_path.write_text(content.replace("Mossarium", "Something Else"), encoding="utf-8")
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "refresh", "--check"
+            ], capture_output=True, text=True)
+            assert result.returncode != 0, \
+                "refresh --check should fail when managed section is tampered"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_refresh_file_index_contains_key_files():
+    """Test that file-index.md contains mossarium/cli.py after refresh."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "refresh"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            content = Path(".mossarium/context/file-index.md").read_text(encoding="utf-8")
+            assert "mossarium/cli.py" in content, \
+                "file-index.md should contain mossarium/cli.py"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_refresh_project_map_contains_refresh():
+    """Test that project-map.md contains mossarium refresh after refresh."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "refresh"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            content = Path(".mossarium/context/project-map.md").read_text(encoding="utf-8")
+            assert "mossarium refresh" in content, \
+                "project-map.md should contain mossarium refresh"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_refresh_excludes_noise_in_file_index():
+    """Test that refresh does not include excluded dirs/patterns in file-index."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "refresh"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            content = Path(".mossarium/context/file-index.md").read_text(encoding="utf-8")
+            # Must not include noise paths
+            assert ".venv" not in content, "file-index should not include .venv"
+            assert ".pytest_cache" not in content, "file-index should not include .pytest_cache"
+            assert "__pycache__" not in content, "file-index should not include __pycache__"
+            assert ".qwen" not in content, "file-index should not include .qwen"
+            assert ".pyc" not in content, "file-index should not include .pyc"
+
+        finally:
+            os.chdir(original_cwd)
+
+
 if __name__ == "__main__":
     test_mossarium_init()
     test_mossarium_check()

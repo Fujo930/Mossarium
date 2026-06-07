@@ -185,6 +185,16 @@ what to read, what to obey, and what to avoid — without human prompting.
 - ✅ Produces [OK], [WARN], [FAIL] markers with Result: PASS / PASS WITH WARNINGS / FAIL
 - ✅ `pytest` includes v0.4 tests; currently 24 passed
 
+### v0.5 — Context Refresh Engine
+
+**Status: COMPLETE after this implementation**
+
+#### Working Features
+- ✅ `mossarium refresh` updates AI Context Map from current repository state
+- ✅ `mossarium refresh --check` verifies whether the context map is stale
+- ✅ Managed sections preserve user content while allowing auto-generated updates
+- ✅ `pytest` includes v0.5 tests; currently 32 passed
+
 ---
 
 ## Key Commands Reference
@@ -205,6 +215,12 @@ mossarium preflight
 # Check whether a repository is ready for AI inheritance
 mossarium audit
 
+# Refresh AI Context Map from current repository state
+mossarium refresh
+
+# Check whether the AI Context Map is stale (no writes)
+mossarium refresh --check
+
 # Run tests
 pytest
 ```
@@ -215,7 +231,7 @@ pytest
 
 This file was created to ensure future conversations have full context about:
 - What Mossarium is (and what it's not)
-- Current state: v0.1 (AI Constitution) COMPLETE, v0.2 (AI Context Map) COMPLETE, v0.3 (Agent Activation Layer) COMPLETE, v0.4 (Inheritance Audit) COMPLETE
+- Current state: v0.1 (AI Constitution) COMPLETE, v0.2 (AI Context Map) COMPLETE, v0.3 (Agent Activation Layer) COMPLETE, v0.4 (Inheritance Audit) COMPLETE, v0.5 (Context Refresh Engine) COMPLETE
 - The correct CLI entry point (`mossarium/cli.py`)
 - Strictly forbidden actions
 - Development workflow rules

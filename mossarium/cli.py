@@ -1193,6 +1193,340 @@ def audit():
         print("Result: PASS")
 
 
+# ---------------------------------------------------------------------------
+# v0.5 — Context Refresh Engine
+# ---------------------------------------------------------------------------
+
+MANAGED_BEGIN = "<!-- MOSSARIUM:BEGIN AUTO-GENERATED -->"
+MANAGED_END = "<!-- MOSSARIUM:END AUTO-GENERATED -->"
+
+# Directories and globs to exclude from file scanning
+EXCLUDED_PATTERNS = [
+    ".git", ".venv", ".pytest_cache", "__pycache__", ".qwen",
+    "build", "dist", "*.egg-info", "*.pyc",
+]
+
+
+def _get_project_files():
+    """Return a sorted list of project file paths, using git ls-files or fallback."""
+    import subprocess as sp
+    try:
+        result = sp.run(
+            ["git", "ls-files"],
+            capture_output=True, text=True, timeout=10
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return sorted(result.stdout.strip().splitlines())
+    except Exception:
+        pass
+
+    # Fallback: walk the directory, excluding known noise
+    files = []
+    for root, dirs, filenames in os.walk("."):
+        # Exclude directories
+        dirs_to_remove = []
+        for d in dirs:
+            if d in (".git", ".venv", ".pytest_cache", "__pycache__", ".qwen", "build", "dist"):
+                dirs_to_remove.append(d)
+        for d in dirs_to_remove:
+            dirs.remove(d)
+
+        for fn in filenames:
+            if fn.endswith(".pyc"):
+                continue
+            rel = os.path.relpath(os.path.join(root, fn), ".")
+            # Skip paths inside excluded directories
+            parts = Path(rel).parts
+            if any(p in (".git", ".venv", ".pytest_cache", "__pycache__", ".qwen", "build", "dist") for p in parts):
+                continue
+            files.append(rel.replace("\\", "/"))
+
+    return sorted(files)
+
+
+def _infer_file_purpose(path: str) -> str:
+    """Return a short human-readable purpose for a known file path."""
+    mapping = {
+        "README.md": "Project overview and usage documentation",
+        "HISTORY.md": "Project history and version record",
+        "QWEN.md": "Local AI memory and startup protocol",
+        "AGENTS.md": "General AI agent activation guide",
+        "pyproject.toml": "Python package configuration and CLI entrypoint",
+        "mossarium/cli.py": "Main CLI implementation",
+        "tests/test_cli.py": "CLI behavior tests",
+        ".mossarium/CONSTITUTION.md": "Repository AI constitution",
+        ".mossarium/MANIFESTO.md": "Project philosophy",
+        ".mossarium/HISTORY.md": "Repository-level project history",
+        ".mossarium/context/project-map.md": "AI project map",
+        ".mossarium/context/file-index.md": "AI-readable file index",
+        ".mossarium/context/edit-zones.md": "Editable zone definitions",
+        ".mossarium/context/invariants.md": "System invariants",
+        ".mossarium/context/agent-protocol.md": "Agent interaction protocol",
+        ".mossarium/context/patch-mode.md": "Patch mode rules",
+        ".mossarium/rules/core-rules.md": "Core development rules",
+        ".mossarium/rules/ai-contribution-rules.md": "AI contribution guidelines",
+        ".mossarium/agents/builder-agent.md": "Builder agent definition",
+        ".mossarium/agents/reviewer-agent.md": "Reviewer agent definition",
+        ".mossarium/agents/historian-agent.md": "Historian agent definition",
+        ".mossarium/agents/guardian-agent.md": "Guardian agent definition",
+    }
+    # Normalize path separators
+    norm = path.replace("\\", "/")
+    if norm in mapping:
+        return mapping[norm]
+    # Try suffix matching
+    if norm.endswith(".py"):
+        return "Python source file"
+    if norm.endswith(".md"):
+        return "Markdown documentation"
+    if norm.endswith(".toml"):
+        return "TOML configuration"
+    if norm.endswith(".json"):
+        return "JSON data or configuration"
+    if norm.endswith(".yml") or norm.endswith(".yaml"):
+        return "YAML configuration"
+    if norm.endswith(".gitkeep"):
+        return "Git directory placeholder"
+    if ".gitignore" in norm:
+        return "Git ignore rules"
+    return "Project file"
+
+
+def _is_core_file(path: str) -> bool:
+    """Return True if the file is considered core to Mossarium."""
+    norm = path.replace("\\", "/")
+    core = [
+        "README.md", "HISTORY.md", "QWEN.md", "AGENTS.md",
+        "pyproject.toml", "mossarium/cli.py", "tests/test_cli.py",
+        ".mossarium/CONSTITUTION.md", ".mossarium/MANIFESTO.md",
+        ".mossarium/HISTORY.md",
+    ]
+    if norm in core:
+        return True
+    if norm.startswith(".mossarium/context/"):
+        return True
+    if norm.startswith(".mossarium/rules/"):
+        return True
+    if norm.startswith(".mossarium/agents/"):
+        return True
+    return False
+
+
+def _managed_replace(filepath: str, new_section: str) -> bool:
+    """Replace content between MANAGED_BEGIN and MANAGED_END markers.
+    If no markers exist, append the managed section at end of file.
+    Returns True if the file was modified."""
+    p = Path(filepath)
+    if not p.exists():
+        return False
+
+    content = p.read_text(encoding="utf-8", errors="ignore")
+    begin_idx = content.find(MANAGED_BEGIN)
+    end_idx = content.find(MANAGED_END)
+
+    new_block = f"{MANAGED_BEGIN}\n{new_section.rstrip()}\n{MANAGED_END}"
+
+    if begin_idx != -1 and end_idx != -1 and end_idx > begin_idx:
+        # Replace existing managed section
+        new_content = content[:begin_idx] + new_block + content[end_idx + len(MANAGED_END):]
+        if new_content != content:
+            p.write_text(new_content, encoding="utf-8")
+            return True
+        return False
+    else:
+        # No managed section yet — append one
+        if not content.endswith("\n"):
+            content += "\n"
+        new_content = content + "\n" + new_block + "\n"
+        p.write_text(new_content, encoding="utf-8")
+        return True
+
+
+def _read_managed_section(filepath: str) -> str:
+    """Return the content between managed markers, or empty string."""
+    p = Path(filepath)
+    if not p.exists():
+        return ""
+    content = p.read_text(encoding="utf-8", errors="ignore")
+    begin_idx = content.find(MANAGED_BEGIN)
+    end_idx = content.find(MANAGED_END)
+    if begin_idx != -1 and end_idx != -1 and end_idx > begin_idx:
+        return content[begin_idx + len(MANAGED_BEGIN):end_idx].strip()
+    return ""
+
+
+def _generate_file_index():
+    """Generate the file-index.md managed section."""
+    files = _get_project_files()
+    lines = ["## File Index", ""]
+    for f in files:
+        purpose = _infer_file_purpose(f)
+        core = "core" if _is_core_file(f) else "supplementary"
+        lines.append(f"- `{f}` — {purpose} ({core})")
+    return "\n".join(lines)
+
+
+def _generate_project_map():
+    """Generate the project-map.md managed section."""
+    return """## Project Map
+
+### Project Identity
+
+Mossarium is an AI constitution system for GitHub repositories.
+
+### Known Commands
+
+- `mossarium init`
+- `mossarium check`
+- `mossarium brief`
+- `mossarium preflight`
+- `mossarium audit`
+- `mossarium refresh`
+
+### Important Directories
+
+- `.mossarium/` — Constitutional framework root
+- `.mossarium/context/` — AI Context Map
+- `.mossarium/rules/` — Core rules
+- `.mossarium/agents/` — Agent definitions
+- `.mossarium/memory/` — Decisions, failures, architecture
+- `mossarium/` — CLI implementation
+- `tests/` — Test suite
+
+### Main Implementation Files
+
+- `mossarium/cli.py` — All CLI commands
+- `tests/test_cli.py` — Behavior tests
+
+### AI Inheritance Workflow
+
+1. Run `mossarium brief` before editing
+2. Run `mossarium preflight` to verify readiness
+3. Read required files
+4. Identify task type
+5. Use Patch Mode for small changes
+6. Run `pytest` after code changes
+7. Run `mossarium audit` to verify inheritance quality
+8. Stop and wait for supervisor confirmation"""
+
+
+def _generate_edit_zones():
+    """Generate the edit-zones.md managed section."""
+    return """## Edit Zones
+
+### Safe Edit Zones
+
+- `README.md`
+- `HISTORY.md`
+- `QWEN.md`
+- `AGENTS.md`
+- `tests/test_cli.py`
+
+### Careful Edit Zones
+
+- `mossarium/cli.py`
+- `.mossarium/context/`
+
+### Do Not Casually Edit
+
+- `pyproject.toml`
+- `CONSTITUTION.md`
+- `MANIFESTO.md`
+- generated caches
+- virtual environments"""
+
+
+def _generate_invariants():
+    """Generate the invariants.md managed section."""
+    return """## Core Invariants
+
+- Mossarium is an AI constitution system for GitHub repositories
+- Mossarium does not make AI smarter
+- It makes repositories easier for AI to inherit
+- Mossarium must not become a chatbot
+- Mossarium must not become a programming language
+- Mossarium must not become a generic coding agent
+- Mossarium must not become a website
+- Mossarium must not become a database
+- Mossarium must not become an LLM API wrapper"""
+
+
+def _generate_agent_protocol():
+    """Generate the agent-protocol.md managed section."""
+    return """## Agent Protocol
+
+### Before Editing
+
+- run `mossarium brief`
+- run `mossarium preflight`
+- read required files
+- identify task type
+- choose Patch Mode for small changes
+
+### After Editing
+
+- run `pytest`
+- run `mossarium check`
+- run `mossarium audit`
+- stop and wait for supervisor confirmation"""
+
+
+def _generate_patch_mode():
+    """Generate the patch-mode.md managed section."""
+    return """## Patch Mode Rules
+
+- Read only relevant files
+- Make the smallest safe change
+- Do not rewrite unrelated documentation
+- Do not add unrequested features
+- Do not redesign architecture
+- Run the smallest relevant tests
+- Stop after verification"""
+
+
+CONTEXT_GENERATORS = {
+    ".mossarium/context/file-index.md": _generate_file_index,
+    ".mossarium/context/project-map.md": _generate_project_map,
+    ".mossarium/context/edit-zones.md": _generate_edit_zones,
+    ".mossarium/context/invariants.md": _generate_invariants,
+    ".mossarium/context/agent-protocol.md": _generate_agent_protocol,
+    ".mossarium/context/patch-mode.md": _generate_patch_mode,
+}
+
+
+def refresh_project():
+    """Refresh AI Context Map managed sections from current repository state."""
+    updated = 0
+    for filepath, generator in CONTEXT_GENERATORS.items():
+        new_section = generator()
+        changed = _managed_replace(filepath, new_section)
+        if changed:
+            print(f"Refreshed: {filepath}")
+            updated += 1
+        else:
+            print(f"Up to date: {filepath}")
+    if updated == 0:
+        print("Context map is up to date.")
+    else:
+        print(f"{updated} context file(s) refreshed.")
+
+
+def check_refresh():
+    """Check whether managed sections are stale. Exits non-zero if any differ."""
+    stale = 0
+    for filepath, generator in CONTEXT_GENERATORS.items():
+        expected = generator()
+        actual = _read_managed_section(filepath)
+        if actual != expected.rstrip():
+            print(f"STALE: {filepath}")
+            stale += 1
+    if stale:
+        print(f"{stale} context file(s) are out of date.")
+        sys.exit(1)
+    else:
+        print("Context map is up to date.")
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(description="Mossarium - Constitutional system for AI-maintained software projects")
@@ -1213,6 +1547,10 @@ def main():
     # audit command
     audit_parser = subparsers.add_parser("audit", help="Check whether a repository is ready for AI inheritance")
 
+    # refresh command
+    refresh_parser = subparsers.add_parser("refresh", help="Refresh AI Context Map from current repository state")
+    refresh_parser.add_argument("--check", action="store_true", help="Only check whether context is stale, do not write")
+
     args = parser.parse_args()
 
     if not args.command:
@@ -1229,6 +1567,11 @@ def main():
         preflight()
     elif args.command == "audit":
         audit()
+    elif args.command == "refresh":
+        if args.check:
+            check_refresh()
+        else:
+            refresh_project()
 
 if __name__ == "__main__":
     main()

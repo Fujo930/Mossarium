@@ -4,7 +4,15 @@ This repository uses Mossarium, an AI constitution system for GitHub repositorie
 
 ## Before Editing
 
-Run `mossarium brief` before editing any file.
+- Run `mossarium brief`
+- Run `mossarium preflight`
+- Run `mossarium refresh --check`
+
+## After Significant Changes
+
+- Run `mossarium refresh`
+- Run `pytest`
+- Run `mossarium audit`
 
 ## Required Reading
 
@@ -28,7 +36,9 @@ Before modifying code, read these Mossarium files:
 ## Quick Start
 
 ```bash
-mossarium brief      # Read the AI project brief
-mossarium preflight  # Check repository readiness
-mossarium check      # Verify compliance
+mossarium brief           # Read the AI project brief
+mossarium preflight       # Check repository readiness
+mossarium refresh --check # Verify context is current
+mossarium check           # Verify compliance
+mossarium audit           # Full inheritance audit
 ```

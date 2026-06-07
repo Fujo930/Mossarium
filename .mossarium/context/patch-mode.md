@@ -44,3 +44,15 @@ Defines the strict protocol for applying fixes and small changes to the codebase
    - [ ] `mossarium check` shows "Project compliance check passed"
    - [ ] No invariant violations
    - [ ] Stop and wait for supervisor confirmation
+
+<!-- MOSSARIUM:BEGIN AUTO-GENERATED -->
+## Patch Mode Rules
+
+- Read only relevant files
+- Make the smallest safe change
+- Do not rewrite unrelated documentation
+- Do not add unrequested features
+- Do not redesign architecture
+- Run the smallest relevant tests
+- Stop after verification
+<!-- MOSSARIUM:END AUTO-GENERATED -->

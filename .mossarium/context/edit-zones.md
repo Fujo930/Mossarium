@@ -33,3 +33,28 @@ Defines which areas of the codebase AI agents can modify and which are protected
 
 The Guardian Agent (`guardian-agent.md`) monitors changes to enforce these zones.
 Violations are recorded in `.mossarium/memory/failures/`.
+
+<!-- MOSSARIUM:BEGIN AUTO-GENERATED -->
+## Edit Zones
+
+### Safe Edit Zones
+
+- `README.md`
+- `HISTORY.md`
+- `QWEN.md`
+- `AGENTS.md`
+- `tests/test_cli.py`
+
+### Careful Edit Zones
+
+- `mossarium/cli.py`
+- `.mossarium/context/`
+
+### Do Not Casually Edit
+
+- `pyproject.toml`
+- `CONSTITUTION.md`
+- `MANIFESTO.md`
+- generated caches
+- virtual environments
+<!-- MOSSARIUM:END AUTO-GENERATED -->
