@@ -7,6 +7,14 @@
 
 ---
 
+## What Problem Does Mossarium Solve?
+
+AI coding agents are powerful, but they need context. Without a shared protocol, every human has to repeatedly remind every agent which files to read, which rules to obey, and which mistakes to avoid.
+
+Mossarium gives every repository a **self-describing layer** that AI agents can read before acting. One `mossarium init` and the rules are in the repo — not in the chat transcript.
+
+---
+
 ## Commands
 
 | Command | What It Does |
@@ -16,8 +24,8 @@
 | `mossarium brief` | Print a short AI project brief before editing |
 | `mossarium preflight` | Check activation safety before modifying code |
 | `mossarium audit` | Full inheritance-quality audit (files, content, semantics, safety) |
-| `mossarium refresh` | Refresh AI Context Map from current repository state |
-| `mossarium refresh --check` | Check whether the context map is stale |
+| `mossarium refresh` | Regenerate AI Context Map from current repository state |
+| `mossarium refresh --check` | Check whether the context map is stale (no writes) |
 | `mossarium integrate codex` | Install Codex local integration scaffold |
 
 ---
@@ -41,15 +49,26 @@ mossarium refresh     # Update AI Context Map
 
 ---
 
-## Capabilities by Version
+## How It Works
 
-### v0.1 — AI Constitution
+### AI Memory Layer
 
-The foundation. `mossarium init` creates the `.mossarium/` directory with rules, memory, proposals, agents, benchmarks, and templates. `mossarium check` verifies every required file and directory exists.
+`mossarium init` creates a `.mossarium/` directory that every AI agent can read before touching code:
 
-### v0.2 — AI Context Map
+```
+.mossarium/
+├── CONSTITUTION.md          # AI constitutional rules
+├── MANIFESTO.md             # Project philosophy
+├── HISTORY.md               # Project history
+├── rules/                   # Core rules + AI contribution guidelines
+├── memory/                  # Decisions, failures, architecture records
+├── proposals/               # Change proposal templates
+├── agents/                  # Builder, reviewer, historian, guardian roles
+├── benchmarks/              # Inheritance + comprehension tests
+└── context/                 # AI Context Map (6 auto-generated files)
+```
 
-Six auto-generated files under `.mossarium/context/` give AI agents a complete picture of the project *before* they modify anything:
+The **AI Context Map** under `.mossarium/context/` gives agents a complete picture of the project *before* they modify anything:
 
 | File | Purpose |
 |---|---|
@@ -60,80 +79,58 @@ Six auto-generated files under `.mossarium/context/` give AI agents a complete p
 | `agent-protocol.md` | Read-first, propose-then-execute protocol |
 | `patch-mode.md` | Minimal, safe fix protocol |
 
-### v0.3 — Agent Activation Layer
+### Agent Activation Layer
 
-AI agents no longer need repeated human reminders. Two new commands and two activation files make the rules self-discovering:
+AI agents discover the rules automatically — no more repeated human reminders:
 
-| Command | Purpose |
+- `mossarium brief` — Print a one-page project brief with identity, required reading, forbidden actions, and workflow.
+- `mossarium preflight` — Check that all activation files are present and no forbidden files exist.
+- `AGENTS.md` — Universal entry point for any AI agent.
+- `QWEN.md` — Project memory for Qwen Code and local AI tools.
+
+### Quality Assurance
+
+Three commands form a safety net, each at a different layer:
+
+| Command | Layer | What It Checks |
+|---|---|---|
+| `mossarium check` | Structure | Are constitutional files present? |
+| `mossarium preflight` | Activation | Are activation files present? Forbidden files absent? |
+| `mossarium audit` | Inheritance | Required files, context quality, semantic markers, forbidden patterns |
+
+`mossarium audit` is fully deterministic — no AI calls, no network, no auto-fix.
+
+### Memory Maintenance
+
+Projects change. The AI Context Map must stay in sync. `mossarium refresh` scans the repository and updates managed sections inside the six context files — while preserving any user-written content outside those sections.
+
+Managed sections use `<!-- MOSSARIUM:BEGIN AUTO-GENERATED -->` markers so Mossarium can safely update generated content without touching user-authored notes.
+
+### Platform Integrations
+
+Mossarium is designed to work with any AI coding platform.
+
+| Platform | Status |
 |---|---|
-| `mossarium brief` | Outputs project identity, required reading, forbidden actions, workflow, and patch-mode rules |
-| `mossarium preflight` | Checks required files, forbidden files, and warns about local directories |
+| **Codex** | ✅ Supported — `mossarium integrate codex` installs a local skill scaffold, plugin package, and repo-scoped marketplace |
+| **Claude Code** | 🔜 Planned |
+| **GitHub Copilot** | 🔜 Planned |
+| **Qwen Code** | 🔜 Planned (already ships QWEN.md) |
+| **Other agents** | Compatible via AGENTS.md + `.mossarium/context/` |
 
-`mossarium init` now also generates:
-
-- `AGENTS.md` — Universal AI agent entry point
-- `QWEN.md` — Project memory for Qwen Code / local AI tools
-
-### v0.4 — Inheritance Audit
-
-A deterministic audit that checks whether a repository is truly ready for AI inheritance — no AI calls, no network, no auto-fix.
-
-```
-$ mossarium audit
-
-Mossarium Inheritance Audit
-
-[OK]  Required file: README.md
-[OK]  Context file has content: invariants.md
-[WARN] Local directory found: .venv/
-
-Result: PASS WITH WARNINGS
-```
-
-**How the commands differ:**
-
-| Command | Checks |
-|---|---|
-| `mossarium check` | Structure — are constitutional files present? |
-| `mossarium preflight` | Activation safety — are activation files present? forbidden files absent? |
-| `mossarium audit` | Inheritance quality — required files, context content, semantic markers, forbidden patterns |
-
-### v0.5 — Context Refresh Engine
-
-Mossarium v0.5 adds **Context Refresh**, moving from static AI memory to maintainable AI memory. `mossarium refresh` scans the repository and updates managed sections inside the AI Context Map — while preserving any user-written content outside those sections.
-
-| Command | Purpose |
-|---|---|
-| `mossarium refresh` | Regenerate AI Context Map from current repository state |
-| `mossarium refresh --check` | Report whether the context map is stale (exit code only, no writes) |
-
-Managed sections use `<!-- MOSSARIUM:BEGIN AUTO-GENERATED -->` markers so
-Mossarium can safely update context without touching user-authored notes.
-
-### v0.6 — Codex Integration Layer
-
-Mossarium v0.6 adds **Codex Integration**, moving from manual CLI usage toward agent-integrated workflow. `mossarium integrate codex` installs a local Codex skill scaffold under `.codex/skills/mossarium/` so Codex-style coding agents can activate Mossarium before and after editing.
-
-| File | Purpose |
-|---|---|
-| `.codex/skills/mossarium/SKILL.md` | Mossarium protocol for Codex agents |
-| `.codex/skills/mossarium/scripts/preflight.py` | Pre-edit checklist (brief, preflight, refresh --check) |
-| `.codex/skills/mossarium/scripts/finish.py` | Post-edit checklist (pytest, refresh, audit, check) |
-
-`mossarium integrate codex` also creates:
+Codex integration generates:
 
 | Path | Purpose |
 |---|---|
-| `plugins/mossarium-codex/` | Codex plugin package candidate (includes `.codex-plugin/plugin.json`, skill, scripts, README) |
-| `.agents/plugins/marketplace.json` | Repo-scoped local marketplace pointing to the plugin package |
+| `.codex/skills/mossarium/SKILL.md` | Mossarium protocol for Codex agents |
+| `.codex/skills/mossarium/scripts/preflight.py` | Pre-edit checklist |
+| `.codex/skills/mossarium/scripts/finish.py` | Post-edit checklist |
+| `plugins/mossarium-codex/` | Publication-candidate plugin package |
+| `.agents/plugins/marketplace.json` | Repo-scoped local marketplace |
 
-This is a publication candidate, not yet an official public marketplace submission.
+This is a publication candidate — not yet an official public marketplace submission.
 
 ---
-
-## What Mossarium Provides
-
-Mossarium gives every repository a self-describing layer that AI agents can read before acting: constitution, history, memory, proposals, agent roles, benchmarks, context map, activation files, and inheritance audit.
 
 ## Development
 
@@ -153,6 +150,8 @@ Mossarium modules are split for AI maintainability:
 | `mossarium/utils.py` | Shared helpers |
 
 When modifying Mossarium, prefer focused modules and avoid growing `mossarium/cli.py` unless changing CLI dispatch.
+
+---
 
 ## What Mossarium Is NOT
 
