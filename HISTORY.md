@@ -1,5 +1,25 @@
 # Mossarium History
 
+## v0.4.0 — Inheritance Audit
+
+**Structure and activation are not enough. A repository must prove it is ready for AI inheritance.**
+
+Mossarium v0.4 introduces `mossarium audit`, a deterministic audit command that checks whether a repository is ready for AI inheritance. It evaluates required files, context file quality, semantic markers in activation files, forbidden file patterns, and known AI failure indicators — without calling any AI, without connecting to any network, and without auto-fixing anything.
+
+### New Command
+- `mossarium audit` — Performs a full inheritance audit with [OK], [WARN], and [FAIL] markers, producing Result: PASS, PASS WITH WARNINGS, or FAIL.
+
+### Audit Checks
+- 12 required files (README, HISTORY, QWEN, AGENTS, constitution, 6 context files)
+- Context file content (all 6 must be non-empty)
+- Semantic markers (README mentions Mossarium/AI Context Map/Agent Activation Layer, QWEN contains key prohibitions, AGENTS contains brief/preflight/Patch Mode, invariants covers identity constraints, patch-mode defines patch protocol)
+- Forbidden files (mossarium.py, tests/README.md → FAIL; .qwen/, .venv/, .pytest_cache/, __pycache__/, *.pyc → WARN)
+
+### Changes in v0.4
+- `mossarium audit` command added with deterministic inheritance checks
+- 10 new tests covering audit happy path, missing files, forbidden files, empty context, warnings-only, and .qwen/ directory
+- All previous 15 tests still pass; total 24 tests
+
 ## v0.3.0 — Agent Activation Layer
 
 **AI agents shouldn't need repeated human reminders to know what to read.**

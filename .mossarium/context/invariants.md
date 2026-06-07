@@ -34,6 +34,10 @@ Defines system invariants that must never be violated during any modification.
    - `.gitkeep` files maintain empty directory tracking
    - Append-only for decision/failure/architecture records
 
+7. **Project Identity Protection**
+   - Mossarium must not be redefined as a chatbot, programming language, generic coding agent, website, database, or LLM API wrapper.
+   - The project identity is fixed and must never be changed by any agent.
+
 ## Violation Consequences
 
 Any invariant violation:

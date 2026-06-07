@@ -403,6 +403,252 @@ def test_mossarium_init_does_not_overwrite_existing_agents_or_qwen():
             os.chdir(original_cwd)
 
 
+def test_mossarium_audit_exits_successfully_after_init():
+    """Test that mossarium audit exits successfully after mossarium init."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            # Create README.md and HISTORY.md (required by audit, not created by init)
+            Path("README.md").write_text("# Test\nMossarium\nAI Context Map\nAgent Activation Layer\n")
+            Path("HISTORY.md").write_text("# History\n")
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "audit"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0, f"mossarium audit failed: {result.stderr}"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_audit_contains_header():
+    """Test that mossarium audit output contains the expected header."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            Path("README.md").write_text("# Test\nMossarium\nAI Context Map\nAgent Activation Layer\n")
+            Path("HISTORY.md").write_text("# History\n")
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "audit"
+            ], capture_output=True, text=True)
+            assert "Mossarium Inheritance Audit" in result.stdout, \
+                "Audit output should contain header"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_audit_contains_result():
+    """Test that mossarium audit output contains Result: PASS or PASS WITH WARNINGS."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            Path("README.md").write_text("# Test\nMossarium\nAI Context Map\nAgent Activation Layer\n")
+            Path("HISTORY.md").write_text("# History\n")
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "audit"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+            output = result.stdout
+            assert ("Result: PASS" in output), \
+                f"Audit output should contain Result: PASS or PASS WITH WARNINGS, got: {output}"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_audit_fails_if_readme_missing():
+    """Test that mossarium audit fails if README.md is missing."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            # Create HISTORY.md but NOT README.md
+            Path("HISTORY.md").write_text("# History\n")
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "audit"
+            ], capture_output=True, text=True)
+            assert result.returncode != 0, "audit should fail when README.md is missing"
+            assert "README.md" in result.stdout, "audit should mention missing README.md"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_audit_fails_if_qwen_missing():
+    """Test that mossarium audit fails if QWEN.md is missing."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            Path("README.md").write_text("# Test\nMossarium\nAI Context Map\nAgent Activation Layer\n")
+            Path("HISTORY.md").write_text("# History\n")
+
+            # Delete QWEN.md
+            Path("QWEN.md").unlink()
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "audit"
+            ], capture_output=True, text=True)
+            assert result.returncode != 0, "audit should fail when QWEN.md is missing"
+            assert "QWEN.md" in result.stdout, "audit should mention missing QWEN.md"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_audit_fails_if_root_mossarium_py_exists():
+    """Test that mossarium audit fails if root mossarium.py exists."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            Path("README.md").write_text("# Test\nMossarium\nAI Context Map\nAgent Activation Layer\n")
+            Path("HISTORY.md").write_text("# History\n")
+
+            # Create forbidden mossarium.py
+            Path("mossarium.py").touch()
+
+            # Use direct file path to avoid mossarium.py shadowing the package
+            import mossarium.cli
+            cli_path = str(Path(mossarium.cli.__file__).resolve())
+            result = subprocess.run([
+                sys.executable, cli_path, "audit"
+            ], capture_output=True, text=True)
+            assert result.returncode != 0, "audit should fail when mossarium.py exists"
+            assert "mossarium.py" in result.stdout, "audit should mention mossarium.py"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_audit_warns_if_qwen_dir_exists():
+    """Test that mossarium audit warns if .qwen/ exists but does not fail."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            Path("README.md").write_text("# Test\nMossarium\nAI Context Map\nAgent Activation Layer\n")
+            Path("HISTORY.md").write_text("# History\n")
+
+            # Create .qwen/ directory
+            Path(".qwen").mkdir(exist_ok=True)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "audit"
+            ], capture_output=True, text=True)
+            # Should still pass (WARN only), not fail
+            assert result.returncode == 0, \
+                f"audit should not fail because of .qwen/, got: {result.stdout}"
+            assert ".qwen/" in result.stdout, "audit should warn about .qwen/"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_audit_fails_if_context_project_map_empty():
+    """Test that mossarium audit fails if .mossarium/context/project-map.md is empty."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            Path("README.md").write_text("# Test\nMossarium\nAI Context Map\nAgent Activation Layer\n")
+            Path("HISTORY.md").write_text("# History\n")
+
+            # Empty the project-map.md file
+            Path(".mossarium/context/project-map.md").write_text("")
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "audit"
+            ], capture_output=True, text=True)
+            assert result.returncode != 0, "audit should fail when project-map.md is empty"
+            assert "empty" in result.stdout.lower(), "audit should mention empty file"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_audit_does_not_fail_on_warnings_only():
+    """Test that mossarium audit passes with warnings when only WARN items exist."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            # Create files with content but missing some semantic markers
+            Path("README.md").write_text("# Test\nMossarium\n")
+            Path("HISTORY.md").write_text("# History\n")
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "audit"
+            ], capture_output=True, text=True)
+            # Should pass with warnings (missing AI Context Map / Agent Activation Layer in README)
+            assert result.returncode == 0, \
+                f"audit should not fail on warnings only, got exit {result.returncode}: {result.stdout}"
+
+        finally:
+            os.chdir(original_cwd)
+
+
 if __name__ == "__main__":
     test_mossarium_init()
     test_mossarium_check()

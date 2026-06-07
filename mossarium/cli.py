@@ -1010,6 +1010,189 @@ def preflight():
 
     print("Mossarium preflight passed")
 
+def audit():
+    """Check whether a repository is ready for AI inheritance."""
+    print("Mossarium Inheritance Audit")
+    print()
+
+    failed = False
+    warnings = False
+
+    # --- Required Files ---
+    required_files = [
+        "README.md",
+        "HISTORY.md",
+        "QWEN.md",
+        "AGENTS.md",
+        ".mossarium/CONSTITUTION.md",
+        ".mossarium/HISTORY.md",
+        ".mossarium/context/project-map.md",
+        ".mossarium/context/file-index.md",
+        ".mossarium/context/edit-zones.md",
+        ".mossarium/context/invariants.md",
+        ".mossarium/context/agent-protocol.md",
+        ".mossarium/context/patch-mode.md",
+    ]
+
+    for filepath in required_files:
+        p = Path(filepath)
+        if p.exists():
+            print(f"[OK] Required file: {filepath}")
+        else:
+            print(f"[FAIL] Required file missing: {filepath}")
+            failed = True
+
+    # --- Context Files Must Not Be Empty ---
+    context_files = [
+        ".mossarium/context/project-map.md",
+        ".mossarium/context/file-index.md",
+        ".mossarium/context/edit-zones.md",
+        ".mossarium/context/invariants.md",
+        ".mossarium/context/agent-protocol.md",
+        ".mossarium/context/patch-mode.md",
+    ]
+
+    for filepath in context_files:
+        p = Path(filepath)
+        if p.exists():
+            if p.stat().st_size == 0:
+                print(f"[FAIL] Context file is empty: {filepath}")
+                failed = True
+            else:
+                print(f"[OK] Context file has content: {filepath}")
+
+    # --- Semantic Checks (WARN only) ---
+
+    # README.md checks
+    readme_path = Path("README.md")
+    if readme_path.exists():
+        readme_content = readme_path.read_text(encoding='utf-8', errors='ignore')
+        if "Mossarium" in readme_content:
+            print("[OK] README.md mentions Mossarium")
+        else:
+            print("[WARN] README.md does not mention Mossarium")
+            warnings = True
+        if "AI Context Map" in readme_content:
+            print("[OK] README.md mentions AI Context Map")
+        else:
+            print("[WARN] README.md does not mention AI Context Map")
+            warnings = True
+        if "Agent Activation Layer" in readme_content:
+            print("[OK] README.md mentions Agent Activation Layer")
+        else:
+            print("[WARN] README.md does not mention Agent Activation Layer")
+            warnings = True
+
+    # QWEN.md checks
+    qwen_path = Path("QWEN.md")
+    if qwen_path.exists():
+        qwen_content = qwen_path.read_text(encoding='utf-8', errors='ignore')
+        qwen_checks = [
+            ("mossarium/cli.py", "mossarium/cli.py"),
+            ("Do not create mossarium.py", "'Do not create mossarium.py'"),
+            ("Do not add generate command", "'Do not add generate command'"),
+            ("Do not add export command", "'Do not add export command'"),
+            ("Patch Mode", "'Patch Mode'"),
+        ]
+        for needle, label in qwen_checks:
+            if needle in qwen_content:
+                print(f"[OK] QWEN.md contains {label}")
+            else:
+                print(f"[WARN] QWEN.md does not contain {label}")
+                warnings = True
+
+    # AGENTS.md checks
+    agents_path = Path("AGENTS.md")
+    if agents_path.exists():
+        agents_content = agents_path.read_text(encoding='utf-8', errors='ignore')
+        agents_checks = [
+            ("mossarium brief", "'mossarium brief'"),
+            ("mossarium preflight", "'mossarium preflight'"),
+            ("Patch Mode", "'Patch Mode'"),
+        ]
+        for needle, label in agents_checks:
+            if needle in agents_content:
+                print(f"[OK] AGENTS.md contains {label}")
+            else:
+                print(f"[WARN] AGENTS.md does not contain {label}")
+                warnings = True
+
+    # invariants.md: must contain at least 2 of the identity-forbidden terms
+    invariants_path = Path(".mossarium/context/invariants.md")
+    if invariants_path.exists() and invariants_path.stat().st_size > 0:
+        inv_content = invariants_path.read_text(encoding='utf-8', errors='ignore')
+        identity_terms = [
+            "chatbot",
+            "programming language",
+            "generic coding agent",
+            "website",
+            "database",
+            "LLM API wrapper",
+        ]
+        found_terms = [t for t in identity_terms if t.lower() in inv_content.lower()]
+        if len(found_terms) >= 2:
+            print(f"[OK] invariants.md covers identity constraints")
+        else:
+            print(f"[WARN] invariants.md should cover identity constraints (found {len(found_terms)}/2)")
+            warnings = True
+
+    # patch-mode.md: must contain one of the patch terms
+    patch_mode_path = Path(".mossarium/context/patch-mode.md")
+    if patch_mode_path.exists() and patch_mode_path.stat().st_size > 0:
+        pm_content = patch_mode_path.read_text(encoding='utf-8', errors='ignore')
+        patch_terms = ["smallest safe change", "minimal patch", "Patch Mode"]
+        if any(t in pm_content for t in patch_terms):
+            print("[OK] patch-mode.md defines patch protocol")
+        else:
+            print("[WARN] patch-mode.md should define patch protocol")
+            warnings = True
+
+    # --- Forbidden Files ---
+    forbidden_fail = [
+        "mossarium.py",
+        "tests/README.md",
+    ]
+
+    for filepath in forbidden_fail:
+        p = Path(filepath)
+        if p.exists():
+            print(f"[FAIL] Forbidden file exists: {filepath}")
+            failed = True
+        else:
+            print(f"[OK] No forbidden file: {filepath}")
+
+    forbidden_warn = [
+        ".qwen/",
+        ".venv/",
+        ".pytest_cache/",
+        "__pycache__/",
+    ]
+
+    for dirpath in forbidden_warn:
+        p = Path(dirpath)
+        if p.exists() and p.is_dir():
+            print(f"[WARN] Local directory found: {dirpath}")
+            warnings = True
+
+    # Check for *.pyc files
+    pyc_files = list(Path(".").rglob("*.pyc"))
+    # Filter out .venv and .pytest_cache
+    pyc_filtered = [f for f in pyc_files if ".venv" not in str(f) and ".pytest_cache" not in str(f) and "__pycache__" not in str(f)]
+    if pyc_filtered:
+        print(f"[WARN] *.pyc files found outside cache dirs")
+        warnings = True
+
+    # --- Result ---
+    print()
+    if failed:
+        print("Result: FAIL")
+        sys.exit(1)
+    elif warnings:
+        print("Result: PASS WITH WARNINGS")
+    else:
+        print("Result: PASS")
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(description="Mossarium - Constitutional system for AI-maintained software projects")
@@ -1027,6 +1210,9 @@ def main():
     # preflight command
     preflight_parser = subparsers.add_parser("preflight", help="Check if the repository is ready for AI-assisted modification")
 
+    # audit command
+    audit_parser = subparsers.add_parser("audit", help="Check whether a repository is ready for AI inheritance")
+
     args = parser.parse_args()
 
     if not args.command:
@@ -1041,6 +1227,8 @@ def main():
         brief_project()
     elif args.command == "preflight":
         preflight()
+    elif args.command == "audit":
+        audit()
 
 if __name__ == "__main__":
     main()

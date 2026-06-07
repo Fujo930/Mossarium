@@ -12,7 +12,7 @@ This file contains critical project context that Qwen Code must read before star
 ### What Mossarium Is
 - A constitutional framework for AI-maintained software projects
 - A directory structure (`.mossarium/`) that stores rules, memory, and guidelines
-- A CLI tool (`mossarium init`, `mossarium check`)
+- A CLI tool (`mossarium init`, `mossarium check`, `mossarium brief`, `mossarium preflight`, `mossarium audit`)
 - A system for AI agents to understand and maintain codebases
 
 ### What Mossarium Is NOT
@@ -121,6 +121,8 @@ mossarium = "mossarium.cli:main"
 9. ❌ Do not use `tree /F` over the whole project
 10. ❌ Do not redefine Mossarium as a chatbot, programming language, generic coding agent, website, database, or LLM API wrapper
 
+In plain terms: Do not create mossarium.py. Do not add generate command. Do not add export command.
+
 ---
 
 ## Development Rule
@@ -173,6 +175,16 @@ what to read, what to obey, and what to avoid — without human prompting.
 - ✅ `mossarium init` generates AGENTS.md and QWEN.md activation files
 - ✅ `pytest` includes v0.3 tests; currently 15 passed
 
+### v0.4 — Inheritance Audit
+
+**Status: COMPLETE after this implementation**
+
+#### Working Features
+- ✅ `mossarium audit` checks whether a repository is ready for AI inheritance
+- ✅ Checks required files, context quality, semantic markers, and forbidden files
+- ✅ Produces [OK], [WARN], [FAIL] markers with Result: PASS / PASS WITH WARNINGS / FAIL
+- ✅ `pytest` includes v0.4 tests; currently 24 passed
+
 ---
 
 ## Key Commands Reference
@@ -190,6 +202,9 @@ mossarium brief
 # Check if the repository is ready for AI-assisted modification
 mossarium preflight
 
+# Check whether a repository is ready for AI inheritance
+mossarium audit
+
 # Run tests
 pytest
 ```
@@ -200,7 +215,7 @@ pytest
 
 This file was created to ensure future conversations have full context about:
 - What Mossarium is (and what it's not)
-- Current state: v0.1 (AI Constitution) COMPLETE, v0.2 (AI Context Map) COMPLETE, v0.3 (Agent Activation Layer) COMPLETE
+- Current state: v0.1 (AI Constitution) COMPLETE, v0.2 (AI Context Map) COMPLETE, v0.3 (Agent Activation Layer) COMPLETE, v0.4 (Inheritance Audit) COMPLETE
 - The correct CLI entry point (`mossarium/cli.py`)
 - Strictly forbidden actions
 - Development workflow rules
