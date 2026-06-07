@@ -1,5 +1,25 @@
 # Mossarium History
 
+## v0.6.1 — Codex Packaging Readiness
+
+v0.6.1 adds Codex plugin packaging scaffolds to `mossarium integrate codex`, preparing Mossarium for future Codex plugin marketplace submission.
+
+### New Scaffolds
+- Plugin package candidate: `plugins/mossarium-codex/` with `.codex-plugin/plugin.json`, skill copy, scripts copy, and README
+- Repo-scoped marketplace: `.agents/plugins/marketplace.json` pointing to the plugin package
+- SKILL.md now includes YAML frontmatter with `name` and `description` fields per Codex spec
+
+### Compatibility
+v0.6.0's local skill scaffold (`.codex/skills/mossarium/`) is fully preserved.
+
+### Changes in v0.6.1
+- `mossarium integrate codex` extended to create plugin package and marketplace scaffolds
+- SKILL.md updated with YAML frontmatter
+- `mossarium/content.py` extended with plugin.json, plugin README, and marketplace.json content
+- `mossarium/paths.py` extended with plugin and marketplace paths
+- 3 new tests: plugin package creation, plugin.json validity, marketplace.json validity
+- All previous 38 tests still pass; total 41 tests
+
 ## v0.6.0 — Codex Integration Layer
 
 Mossarium v0.6 introduces `mossarium integrate codex`.

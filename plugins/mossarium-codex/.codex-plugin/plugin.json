@@ -1,0 +1,6 @@
+{
+  "name": "mossarium-codex",
+  "version": "0.6.1",
+  "description": "Codex plugin package for the Mossarium AI repository inheritance protocol.",
+  "skills": "./skills/"
+}

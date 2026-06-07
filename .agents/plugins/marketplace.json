@@ -1,0 +1,20 @@
+{
+  "name": "mossarium-local",
+  "interface": {
+    "displayName": "Mossarium Local Plugins"
+  },
+  "plugins": [
+    {
+      "name": "mossarium-codex",
+      "source": {
+        "source": "local",
+        "path": "./plugins/mossarium-codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

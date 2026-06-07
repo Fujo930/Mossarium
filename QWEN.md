@@ -216,6 +216,17 @@ Future agents should prefer editing focused modules instead of expanding `mossar
 - ✅ Existing files are never overwritten
 - ✅ `pytest` includes v0.6 tests; currently 38 passed
 
+### v0.6.1 — Codex Packaging Readiness
+
+**Status: COMPLETE after this implementation**
+
+#### Working Features
+- ✅ SKILL.md includes YAML frontmatter with `name` and `description` per Codex spec
+- ✅ Plugin package candidate generated under `plugins/mossarium-codex/`
+- ✅ Repo-scoped marketplace scaffold generated at `.agents/plugins/marketplace.json`
+- ✅ v0.6.0 local skill scaffold (`.codex/skills/mossarium/`) fully preserved
+- ✅ `pytest` includes v0.6.1 tests; currently 41 passed
+
 ---
 
 ## Key Commands Reference
@@ -255,7 +266,7 @@ pytest
 
 This file was created to ensure future conversations have full context about:
 - What Mossarium is (and what it's not)
-- Current state: v0.1 (AI Constitution) COMPLETE, v0.2 (AI Context Map) COMPLETE, v0.3 (Agent Activation Layer) COMPLETE, v0.4 (Inheritance Audit) COMPLETE, v0.5 (Context Refresh Engine) COMPLETE, v0.6 (Codex Integration Layer) COMPLETE
+- Current state: v0.1 (AI Constitution) COMPLETE, v0.2 (AI Context Map) COMPLETE, v0.3 (Agent Activation Layer) COMPLETE, v0.4 (Inheritance Audit) COMPLETE, v0.5 (Context Refresh Engine) COMPLETE, v0.6 (Codex Integration Layer) COMPLETE, v0.6.1 (Codex Packaging Readiness) COMPLETE
 - The correct CLI entry point (`mossarium/cli.py`)
 - Strictly forbidden actions
 - Development workflow rules

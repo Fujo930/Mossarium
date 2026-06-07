@@ -119,3 +119,18 @@ CODEX_SCRIPTS_DIR = ".codex/skills/mossarium/scripts"
 CODEX_SKILL_FILE = ".codex/skills/mossarium/SKILL.md"
 CODEX_PREFLIGHT_SCRIPT = ".codex/skills/mossarium/scripts/preflight.py"
 CODEX_FINISH_SCRIPT = ".codex/skills/mossarium/scripts/finish.py"
+
+# --- v0.6.1 Codex plugin package paths ---
+PLUGIN_DIR = "plugins/mossarium-codex"
+PLUGIN_CODEX_DIR = "plugins/mossarium-codex/.codex-plugin"
+PLUGIN_JSON_FILE = "plugins/mossarium-codex/.codex-plugin/plugin.json"
+PLUGIN_SKILL_DIR = "plugins/mossarium-codex/skills/mossarium"
+PLUGIN_SCRIPTS_DIR = "plugins/mossarium-codex/skills/mossarium/scripts"
+PLUGIN_SKILL_FILE = "plugins/mossarium-codex/skills/mossarium/SKILL.md"
+PLUGIN_PREFLIGHT = "plugins/mossarium-codex/skills/mossarium/scripts/preflight.py"
+PLUGIN_FINISH = "plugins/mossarium-codex/skills/mossarium/scripts/finish.py"
+PLUGIN_README = "plugins/mossarium-codex/README.md"
+
+# --- v0.6.1 repo-scoped marketplace ---
+MARKETPLACE_DIR = ".agents/plugins"
+MARKETPLACE_FILE = ".agents/plugins/marketplace.json"

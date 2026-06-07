@@ -943,6 +943,9 @@ def test_mossarium_integrate_codex_skill_contains_required_content():
             assert "mossarium refresh --check" in content
             assert "mossarium audit" in content
             assert "Patch Mode" in content
+            # v0.6.1: YAML frontmatter
+            assert "name: mossarium" in content
+            assert "description:" in content
 
         finally:
             os.chdir(original_cwd)
@@ -1014,6 +1017,85 @@ def test_mossarium_help_includes_integrate():
     ], capture_output=True, text=True)
     assert result.returncode == 0
     assert "integrate" in result.stdout, "--help should include integrate command"
+
+
+def test_mossarium_integrate_codex_creates_plugin_package():
+    """Test that integrate codex creates the plugin package scaffold."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "integrate", "codex"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            assert Path("plugins/mossarium-codex/.codex-plugin/plugin.json").exists()
+            assert Path("plugins/mossarium-codex/skills/mossarium/SKILL.md").exists()
+            assert Path("plugins/mossarium-codex/skills/mossarium/scripts/preflight.py").exists()
+            assert Path("plugins/mossarium-codex/skills/mossarium/scripts/finish.py").exists()
+            assert Path("plugins/mossarium-codex/README.md").exists()
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_integrate_codex_plugin_json_is_valid():
+    """Test that plugin.json is valid JSON with required fields."""
+    import json
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "integrate", "codex"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            data = json.loads(Path("plugins/mossarium-codex/.codex-plugin/plugin.json").read_text(encoding="utf-8"))
+            assert data["name"] == "mossarium-codex"
+            assert data["version"] == "0.6.1"
+            assert data["skills"] == "./skills/"
+
+        finally:
+            os.chdir(original_cwd)
+
+
+def test_mossarium_integrate_codex_marketplace_is_valid():
+    """Test that marketplace.json is valid JSON and points to plugin."""
+    import json
+    with tempfile.TemporaryDirectory() as temp_dir:
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(temp_dir)
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "init"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            result = subprocess.run([
+                sys.executable, "-m", "mossarium.cli", "integrate", "codex"
+            ], capture_output=True, text=True)
+            assert result.returncode == 0
+
+            data = json.loads(Path(".agents/plugins/marketplace.json").read_text(encoding="utf-8"))
+            assert data["plugins"][0]["source"]["path"] == "./plugins/mossarium-codex"
+
+        finally:
+            os.chdir(original_cwd)
 
 
 if __name__ == "__main__":

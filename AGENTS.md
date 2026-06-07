@@ -37,6 +37,9 @@ Before modifying code, read these Mossarium files:
 ## If Using Codex
 
 - Run `mossarium integrate codex` once
+- Inspect `.codex/skills/mossarium/` — local skill scaffold
+- Inspect `plugins/mossarium-codex/` — plugin package candidate
+- Use repo-scoped marketplace at `.agents/plugins/marketplace.json` for local testing
 - Before editing, follow the Mossarium Codex Skill:
   - Run `mossarium brief`
   - Run `mossarium preflight`

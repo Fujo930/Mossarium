@@ -36,6 +36,9 @@ AI agents should read this index first to understand the project layout before e
 
 | Path | Purpose | Core |
 |---|---|---|
+| .codex/skills/mossarium/SKILL.md | Documentation |  |
+| .codex/skills/mossarium/scripts/finish.py | Python source file |  |
+| .codex/skills/mossarium/scripts/preflight.py | Python source file |  |
 | .gitignore | Git ignore rules |  |
 | .mossarium/CONSTITUTION.md | Repository AI constitution | yes |
 | .mossarium/HISTORY.md | Repository-level project history | yes |
@@ -72,6 +75,7 @@ AI agents should read this index first to understand the project layout before e
 | mossarium/cli.py | Main CLI implementation | yes |
 | mossarium/content.py | Python source file |  |
 | mossarium/init.py | Python source file |  |
+| mossarium/integrations.py | Python source file |  |
 | mossarium/paths.py | Python source file |  |
 | mossarium/preflight.py | Python source file |  |
 | mossarium/refresh.py | Python source file |  |

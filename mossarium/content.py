@@ -878,7 +878,12 @@ CONTEXT_GENERATORS = {
 # v0.6 — Codex Integration Content
 # =============================================================================
 
-CODEX_SKILL_CONTENT = """# Mossarium Codex Skill
+CODEX_SKILL_CONTENT = """---
+name: mossarium
+description: Activate Mossarium before and after AI-assisted code changes; use brief, preflight, refresh, audit, and check to keep repository inheritance safe.
+---
+
+# Mossarium Codex Skill
 
 ## Project Identity
 
@@ -957,3 +962,53 @@ exit_code |= run("mossarium audit")
 exit_code |= run("mossarium check")
 sys.exit(exit_code)
 '''
+
+
+# =============================================================================
+# v0.6.1 — Codex Plugin Package & Marketplace Scaffolds
+# =============================================================================
+
+PLUGIN_JSON_CONTENT = """{
+  "name": "mossarium-codex",
+  "version": "0.6.1",
+  "description": "Codex plugin package for the Mossarium AI repository inheritance protocol.",
+  "skills": "./skills/"
+}
+"""
+
+PLUGIN_README_CONTENT = """# Mossarium Codex Plugin
+
+This plugin packages the Mossarium Codex Skill.
+
+It helps Codex-style coding agents:
+
+- run `mossarium brief` before editing
+- run `mossarium preflight` before editing
+- run `mossarium refresh --check` before editing
+- use Patch Mode for small changes
+- run `pytest`, `mossarium refresh`, `mossarium audit`, and `mossarium check` after editing
+
+This package is a local plugin scaffold, not yet an official public marketplace submission.
+"""
+
+MARKETPLACE_JSON_CONTENT = """{
+  "name": "mossarium-local",
+  "interface": {
+    "displayName": "Mossarium Local Plugins"
+  },
+  "plugins": [
+    {
+      "name": "mossarium-codex",
+      "source": {
+        "source": "local",
+        "path": "./plugins/mossarium-codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
+"""
