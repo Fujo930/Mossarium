@@ -2,16 +2,22 @@
 
 **Mossarium is an AI constitution system for GitHub repositories.**
 
-> **Mossarium does not make AI smarter.**
-> **It makes repositories easier for AI to inherit.**
+> Mossarium does not make AI smarter.  
+> It makes repositories easier for AI to inherit.
 
-## Features
+---
 
-- `mossarium init` - Initialize project with complete constitutional structure + AI Context Map + Agent Activation files
-- `mossarium check` - Check project compliance with constitutional requirements
-- `mossarium brief` - Output a short AI project brief before editing
-- `mossarium preflight` - Check whether the repository is ready for AI-assisted modification
-- `mossarium audit` - Check whether a repository is ready for AI inheritance
+## Commands
+
+| Command | What It Does |
+|---|---|
+| `mossarium init` | Initialize a project with constitutional structure, AI Context Map, and activation files |
+| `mossarium check` | Verify structural compliance (are all required files present?) |
+| `mossarium brief` | Print a short AI project brief before editing |
+| `mossarium preflight` | Check activation safety before modifying code |
+| `mossarium audit` | Full inheritance-quality audit (files, content, semantics, safety) |
+
+---
 
 ## Installation
 
@@ -19,102 +25,89 @@
 pip install -e .
 ```
 
-## Usage
+## Quick Start
 
 ```bash
-# Initialize a new project with constitutional files
-# Now generates:
-#   - constitutional structure (CONSTITUTION, MANIFESTO, HISTORY)
-#   - memory structure (decisions, failures, architecture)
-#   - proposal structure (templates)
-#   - agent role files (builder, reviewer, historian, guardian)
-#   - benchmark files (inheritance, comprehension)
-#   - AI Context Map (6 files)
-#   - Agent Activation files (AGENTS.md, QWEN.md)
-mossarium init
-
-# Check project compliance
-# Verifies all constitutional files + AI Context Map exist
-mossarium check
-
-# Output a short AI project brief before editing
-mossarium brief
-
-# Check if the repository is ready for AI-assisted modification
-mossarium preflight
-
-# Check whether a repository is ready for AI inheritance
-mossarium audit
+mossarium init        # Set up a new project
+mossarium brief       # Read the AI project brief
+mossarium preflight   # Verify repo is ready for AI work
+mossarium check       # Check constitutional compliance
+mossarium audit       # Run full inheritance audit
 ```
 
-## AI Context Map (v0.2)
+---
 
-Mossarium v0.2 adds an **AI Context Map** generated under:
+## Capabilities by Version
 
-```
-.mossarium/context/
-├── project-map.md       # High-level project structure & entry points
-├── file-index.md        # Index of all important files for AI navigation
-├── edit-zones.md        # Safe / controlled / protected modification zones
-├── invariants.md        # System invariants that must never be violated
-├── agent-protocol.md    # Interaction protocol for AI agents (read-first, propose-then-execute)
-└── patch-mode.md        # Strict protocol for minimal, safe fixes
-```
+### v0.1 — AI Constitution
 
-These files help AI agents understand **before modifying code**:
+The foundation. `mossarium init` creates the `.mossarium/` directory with rules, memory, proposals, agents, benchmarks, and templates. `mossarium check` verifies every required file and directory exists.
 
-- **Project goals** — what the project is and how it's organized
-- **File responsibilities** — which files do what
-- **Editable zones** — where AI can safely make changes
-- **Invariants** — rules that must never be broken
-- **Agent protocol** — how agents coordinate (read-first, propose-then-execute)
-- **Patch mode** — minimal, safe fix protocol
+### v0.2 — AI Context Map
 
-## Agent Activation Layer (v0.3)
+Six auto-generated files under `.mossarium/context/` give AI agents a complete picture of the project *before* they modify anything:
 
-Mossarium v0.3 adds an **Agent Activation Layer** so AI agents know what to read, what to obey, and what to avoid — without repeated human reminders.
+| File | Purpose |
+|---|---|
+| `project-map.md` | High-level project structure and entry points |
+| `file-index.md` | Index of key files and their responsibilities |
+| `edit-zones.md` | Safe, controlled, and protected modification zones |
+| `invariants.md` | Rules that must never be broken |
+| `agent-protocol.md` | Read-first, propose-then-execute protocol |
+| `patch-mode.md` | Minimal, safe fix protocol |
 
-### New Commands
+### v0.3 — Agent Activation Layer
 
-- `mossarium brief` — Outputs a short AI Project Brief with project identity, required reading, forbidden actions, recommended workflow, and patch mode rules.
-- `mossarium preflight` — Checks whether the repository is ready for AI-assisted modification by verifying required files exist, forbidden files are absent, and warning about local directories.
+AI agents no longer need repeated human reminders. Two new commands and two activation files make the rules self-discovering:
 
-### Activation Files
+| Command | Purpose |
+|---|---|
+| `mossarium brief` | Outputs project identity, required reading, forbidden actions, workflow, and patch-mode rules |
+| `mossarium preflight` | Checks required files, forbidden files, and warns about local directories |
 
 `mossarium init` now also generates:
 
-- `AGENTS.md` — Universal AI agent entry point telling any AI agent to run `mossarium brief` and follow Mossarium rules.
-- `QWEN.md` — Project memory file for Qwen Code / local AI tools, containing full project context and development rules.
+- `AGENTS.md` — Universal AI agent entry point
+- `QWEN.md` — Project memory for Qwen Code / local AI tools
 
-## Inheritance Audit (v0.4)
+### v0.4 — Inheritance Audit
 
-Mossarium v0.4 adds **Inheritance Audit**, a deterministic check that evaluates whether a repository is truly ready for AI inheritance — without calling any AI, without connecting to any network, and without auto-fixing anything.
+A deterministic audit that checks whether a repository is truly ready for AI inheritance — no AI calls, no network, no auto-fix.
 
-### How the Commands Differ
-
-- `mossarium check` — verifies structure (are constitutional files present?)
-- `mossarium preflight` — verifies activation safety before editing (are activation files present? are forbidden files absent?)
-- `mossarium audit` — verifies inheritance quality (are required files present? do context files have content? are semantic markers in place? are forbidden files absent?)
-
-### Usage
-
-```bash
-mossarium audit
 ```
+$ mossarium audit
+
+Mossarium Inheritance Audit
+
+[OK]  Required file: README.md
+[OK]  Context file has content: invariants.md
+[WARN] Local directory found: .venv/
+
+Result: PASS WITH WARNINGS
+```
+
+**How the commands differ:**
+
+| Command | Checks |
+|---|---|
+| `mossarium check` | Structure — are constitutional files present? |
+| `mossarium preflight` | Activation safety — are activation files present? forbidden files absent? |
+| `mossarium audit` | Inheritance quality — required files, context content, semantic markers, forbidden patterns |
+
+---
 
 ## What Mossarium Provides
 
-Mossarium establishes an AI-readable constitution, history, memory, proposal process, inheritance checks, and an **AI Context Map** for software projects.
+Mossarium gives every repository a self-describing layer that AI agents can read before acting: constitution, history, memory, proposals, agent roles, benchmarks, context map, activation files, and inheritance audit.
 
-## Important Notes
+## What Mossarium Is NOT
 
-This is **NOT**:
-- A chatbot
-- A programming language
-- An AI coding agent
-- A website or database
-- An LLM API wrapper
+- Not a chatbot
+- Not a programming language
+- Not a generic coding agent
+- Not a website or database
+- Not an LLM API wrapper
 
 ## Core Principle
 
-Mossarium gives software projects a constitution that future AI agents must read before changing code.
+> Mossarium does not make AI smarter. It makes repositories easier for AI to inherit.
