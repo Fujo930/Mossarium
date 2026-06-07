@@ -25,18 +25,20 @@ This file contains critical project context that Qwen Code must read before star
 
 ---
 
-## Current Stable State (v0.1)
+## Current Stable State
+
+### v0.1 — AI Constitution
 
 **Status: COMPLETE**
 
-### Working Features
+#### Working Features
 - ✅ `mossarium init` works - initializes `.mossarium/` directory structure
 - ✅ `mossarium check` works - validates constitutional compliance
 - ✅ `pytest passes` - all tests pass
 - ✅ Empty project initialization works
 - ✅ Complete `.mossarium/` inheritance structure exists
 
-### Project Structure (v0.1)
+#### Project Structure (v0.1)
 ```
 .mossarium/
 ├── CONSTITUTION.md      # AI constitutional rules
@@ -64,6 +66,26 @@ This file contains critical project context that Qwen Code must read before star
 │   └── comprehension-test.md
 └── templates/
 ```
+
+### v0.2 — AI Context Map
+
+**Status: COMPLETE**
+
+#### Working Features
+- ✅ `mossarium init` automatically generates the AI Context Map under `.mossarium/context/`
+- ✅ `mossarium check` validates all 6 context files; missing any outputs `MISSING` and returns non-zero exit code
+- ✅ `pytest` includes v0.2 context tests; currently 8 passed
+- ✅ `README.md` and `HISTORY.md` record v0.2 — AI Context Map
+
+#### `.mossarium/context/` Structure (v0.2)
+```
+.mossarium/context/
+├── project-map.md       # High-level project structure and entry points
+├── file-index.md        # Index of key files and their purposes
+├── edit-zones.md        # Which files are safe to edit and how
+├── invariants.md        # Rules that must never be broken
+├── agent-protocol.md    # How AI agents should operate in this repository
+└── patch-mode.md        # Rules for small, focused patches
 
 ---
 
@@ -131,20 +153,19 @@ mossarium = "mossarium.cli:main"
 
 ---
 
-## v0.2 Goal (NOT CURRENTLY IMPLEMENTING)
+## v0.3 Goal (NEXT PLANNED WORK)
 
-**Goal: Add AI Context Map support**
+**Goal: Agent Activation Layer**
 
-### Planned `.mossarium/context/` Structure
-```
-.mossarium/context/
-├── context-map.md
-├── codebase-overview.md
-├── architecture-decisions.md
-└── conventions.md
-```
+### Problem
+AI agents currently need repeated human reminders about which files to read,
+which rules to follow, and which mistakes to avoid.
 
-**Note:** This is NOT yet implemented. Do not create these files.
+### Solution
+`mossarium brief` / `mossarium preflight` will automatically tell the agent
+what to read, what to obey, and what to avoid — without human prompting.
+
+**Note:** This is NOT yet implemented. Do not create these commands.
 
 ---
 
@@ -167,7 +188,8 @@ pytest
 
 This file was created to ensure future conversations have full context about:
 - What Mossarium is (and what it's not)
-- Current v0.1 state and working features
+- Current state: v0.1 (AI Constitution) COMPLETE, v0.2 (AI Context Map) COMPLETE
+- Next planned: v0.3 (Agent Activation Layer)
 - The correct CLI entry point (`mossarium/cli.py`)
 - Strictly forbidden actions
 - Development workflow rules
